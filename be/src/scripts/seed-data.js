@@ -9,9 +9,7 @@ import User from '../models/User.model.js';
 import Category from '../models/Category.model.js';
 import Tag from '../models/Tag.model.js';
 import Article from '../models/Article.model.js';
-import Comment from '../models/Comment.model.js';
-import Conversation from '../models/Conversation.model.js';
-import Message from '../models/Message.model.js';
+
 
 // --- Config Env ---
 const __filename = fileURLToPath(import.meta.url);
@@ -22,7 +20,7 @@ const seedData = async () => {
   try {
     // 1. Kết nối Database
     console.log('🔌 Connecting to MongoDB...');
-    const MONGO_URI = process.env.MONGO_URI || 'mongodb+srv://anhdung2004hd123_db_user:ECzkK9qcudrpJ3Sz@qldahttt.ucydytn.mongodb.net/?appName=qldahttt';
+    const MONGO_URI = process.env.MONGODB_URI;
     await mongoose.connect(MONGO_URI);
     
     // 2. Clear Database
