@@ -13,21 +13,12 @@ export const CategoryService = {
   },
 
   create: async (payload: CreateCategoryPayload): Promise<Category> => {
-    const res = await axiosInstance.post<ApiResponse<ICategory>>(
-      ENDPOINT,
-      payload,
-    );
+    const res = await axiosInstance.post<ApiResponse<ICategory>>(ENDPOINT, payload);
     return new Category(res.data.data);
   },
 
-  update: async (
-    id: string,
-    payload: Partial<CreateCategoryPayload>,
-  ): Promise<Category> => {
-    const res = await axiosInstance.put<ApiResponse<ICategory>>(
-      `${ENDPOINT}/${id}`,
-      payload,
-    );
+  update: async (id: string, payload: Partial<CreateCategoryPayload>): Promise<Category> => {
+    const res = await axiosInstance.put<ApiResponse<ICategory>>(`${ENDPOINT}/${id}`, payload);
     return new Category(res.data.data);
   },
 

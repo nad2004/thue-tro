@@ -1,7 +1,7 @@
-import { useMutation } from "@tanstack/react-query";
-import { useAuthStore } from "@/store/auth-store";
-import { AuthService } from "@/services/Auth.service";
-import { LoginValues, RegisterValues } from "@/lib/utils/validation";
+import { useMutation } from '@tanstack/react-query';
+import { useAuthStore } from '@/store/auth-store';
+import { AuthService } from '@/services/Auth.service';
+import { LoginValues, RegisterValues } from '@/lib/utils/validation';
 
 export const useAuthActions = () => {
   const setAuth = useAuthStore((state) => state.setAuth);
@@ -17,7 +17,7 @@ export const useAuthActions = () => {
     },
     onError: (error: any) => {
       // Ném lỗi ra để component (ví dụ LoginForm) có thể catch và hiển thị form error
-      throw new Error(error.response?.data?.message || "Email hoặc mật khẩu không đúng.");
+      throw new Error(error.response?.data?.message || 'Email hoặc mật khẩu không đúng.');
     },
   });
 
@@ -29,7 +29,7 @@ export const useAuthActions = () => {
       }
     },
     onError: (error: any) => {
-      throw new Error(error.response?.data?.message || "Đăng ký thất bại.");
+      throw new Error(error.response?.data?.message || 'Đăng ký thất bại.');
     },
   });
 
@@ -55,6 +55,6 @@ export const useAuthStatus = () => {
     token,
     isLoading,
     isLoggedIn: !!token,
-    isAdmin: user?.role === 'Admin' // Helper tiện ích
+    isAdmin: user?.role === 'Admin', // Helper tiện ích
   };
 };

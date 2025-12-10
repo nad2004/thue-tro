@@ -1,7 +1,7 @@
-import React from "react";
-import { Card, Typography } from "antd";
-import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend } from "recharts";
-import { DashboardRoleData } from "./constants";
+import React from 'react';
+import { Card, Typography } from 'antd';
+import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend } from 'recharts';
+import { DashboardRoleData } from './constants';
 
 const { Title } = Typography;
 
@@ -31,7 +31,7 @@ const RolesChart: React.FC<RolesChartProps> = ({ data, colors }) => {
               ))}
             </Pie>
             <Tooltip />
-            <Legend verticalAlign="bottom" height={36}/>
+            <Legend verticalAlign="bottom" height={36} />
           </PieChart>
         </ResponsiveContainer>
       </div>

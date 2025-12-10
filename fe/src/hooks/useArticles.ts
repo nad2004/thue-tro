@@ -27,18 +27,14 @@ export const useCreateArticle = () => {
       queryClient.invalidateQueries({ queryKey: ['articles'] });
       message.success('Tạo bài viết thành công');
     },
-    onError: (e: any) =>
-      message.error(e.response?.data?.message || 'Tạo thất bại'),
+    onError: (e: any) => message.error(e.response?.data?.message || 'Tạo thất bại'),
   });
 };
 
 export const useUpdateArticle = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({
-      id,
-      ...data
-    }: { id: string } & Partial<CreateArticlePayload>) =>
+    mutationFn: ({ id, ...data }: { id: string } & Partial<CreateArticlePayload>) =>
       ArticleService.update(id, data),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ['articles'] });
@@ -47,8 +43,7 @@ export const useUpdateArticle = () => {
       }
       message.success('Cập nhật thành công');
     },
-    onError: (e: any) =>
-      message.error(e.response?.data?.message || 'Cập nhật thất bại'),
+    onError: (e: any) => message.error(e.response?.data?.message || 'Cập nhật thất bại'),
   });
 };
 
@@ -60,7 +55,6 @@ export const useDeleteArticle = () => {
       queryClient.invalidateQueries({ queryKey: ['articles'] });
       message.success('Xóa bài viết thành công');
     },
-    onError: (e: any) =>
-      message.error(e.response?.data?.message || 'Xóa thất bại'),
+    onError: (e: any) => message.error(e.response?.data?.message || 'Xóa thất bại'),
   });
 };

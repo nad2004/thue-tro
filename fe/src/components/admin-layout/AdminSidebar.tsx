@@ -1,18 +1,18 @@
-import React from "react";
-import { Layout, Menu, Button, theme, Typography, MenuProps } from "antd";
-import { useLocation, useNavigate } from "react-router-dom";
-import { 
-  LayoutDashboard, 
-  FileText, 
-  Folder, 
-  Users, 
+import React from 'react';
+import { Layout, Menu, Button, theme, Typography, MenuProps } from 'antd';
+import { useLocation, useNavigate } from 'react-router-dom';
+import {
+  LayoutDashboard,
+  FileText,
+  Folder,
+  Users,
   LogOut,
   TagIcon,
-  MessageCircleIcon
-} from "lucide-react";
+  MessageCircleIcon,
+} from 'lucide-react';
 
 // Import Hook Auth
-import { useAuthActions } from "@/hooks/useAuth"; 
+import { useAuthActions } from '@/hooks/useAuth';
 
 const { Sider } = Layout;
 const { Text } = Typography;
@@ -23,46 +23,46 @@ type MenuItem = Required<MenuProps>['items'][number];
 const AppSidebar: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  
+
   const { logout } = useAuthActions();
   const { token } = theme.useToken();
 
   const menuItems: MenuItem[] = [
     {
-      key: "/admin/dashboard",
+      key: '/admin/dashboard',
       icon: <LayoutDashboard size={20} />,
-      label: "Dashboard",
+      label: 'Dashboard',
     },
     {
-      key: "/admin/articles",
+      key: '/admin/articles',
       icon: <FileText size={20} />,
-      label: "Bài viết",
+      label: 'Bài viết',
     },
     {
-      key: "/admin/categories",
+      key: '/admin/categories',
       icon: <Folder size={20} />,
-      label: "Danh mục",
+      label: 'Danh mục',
     },
     {
-      key: "/admin/users",
+      key: '/admin/users',
       icon: <Users size={20} />,
-      label: "Người dùng",
+      label: 'Người dùng',
     },
     {
-      key: "/admin/tags",
+      key: '/admin/tags',
       icon: <TagIcon size={20} />,
-      label: "Tags",
+      label: 'Tags',
     },
     {
-      key: "/admin/comments",
+      key: '/admin/comments',
       icon: <MessageCircleIcon size={20} />,
-      label: "Comments",
+      label: 'Comments',
     },
   ];
 
   const handleLogout = () => {
     logout();
-    navigate("/login");
+    navigate('/login');
   };
 
   return (
@@ -74,21 +74,25 @@ const AppSidebar: React.FC = () => {
     >
       {/* --- HEADER (LOGO) --- */}
       <div className="h-16 flex items-center px-6 border-b border-gray-100 shrink-0">
-        <div 
+        <div
           className="flex h-8 w-8 items-center justify-center rounded-md mr-3 font-bold text-white"
           style={{ backgroundColor: token.colorPrimary }}
         >
           A
         </div>
-        <Text strong style={{ fontSize: 16 }}>Admin System</Text>
+        <Text strong style={{ fontSize: 16 }}>
+          Admin System
+        </Text>
       </div>
 
       {/* --- CONTENT (MENU) --- */}
       <div className="flex-1 overflow-y-auto py-4">
         <div className="px-4 mb-2">
-          <Text type="secondary" className="text-xs uppercase font-semibold">Menu chính</Text>
+          <Text type="secondary" className="text-xs uppercase font-semibold">
+            Menu chính
+          </Text>
         </div>
-        
+
         <Menu
           mode="inline"
           selectedKeys={[location.pathname]}
@@ -100,11 +104,11 @@ const AppSidebar: React.FC = () => {
 
       {/* --- FOOTER (LOGOUT) --- */}
       <div className="p-4 border-t border-gray-100 shrink-0 bg-gray-50">
-        <Button 
-          type="text" 
-          danger 
-          block 
-          icon={<LogOut size={18} />} 
+        <Button
+          type="text"
+          danger
+          block
+          icon={<LogOut size={18} />}
           onClick={handleLogout}
           style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-start' }}
         >

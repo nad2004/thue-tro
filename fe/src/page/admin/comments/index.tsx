@@ -1,7 +1,7 @@
-import React, { useState } from "react";
-import { Card, Input, Button, List, Avatar, Popconfirm, Empty, Typography } from "antd";
-import { DeleteOutlined, UserOutlined, SearchOutlined } from "@ant-design/icons";
-import { useCommentsByArticle, useDeleteComment } from "@/hooks/useComments";
+import React, { useState } from 'react';
+import { Card, Input, Button, List, Avatar, Popconfirm, Empty, Typography } from 'antd';
+import { DeleteOutlined, UserOutlined, SearchOutlined } from '@ant-design/icons';
+import { useCommentsByArticle, useDeleteComment } from '@/hooks/useComments';
 
 // 1. Định nghĩa kiểu dữ liệu cho Comment (Dựa trên cách bạn dùng trong JSX cũ)
 // Nếu bạn đã có model Comment.ts, hãy import nó vào thay vì khai báo cục bộ
@@ -15,15 +15,15 @@ export interface CommentItem {
   _id: string;
   userID?: CommentUser | null; // Có thể null nếu là khách
   guestName?: string;
-  content?: string;      // Backend thường trả về 'content'
-  commentText?: string;  // Fallback nếu API trả về 'commentText' (theo code cũ của bạn)
+  content?: string; // Backend thường trả về 'content'
+  commentText?: string; // Fallback nếu API trả về 'commentText' (theo code cũ của bạn)
   createdAt: string;
 }
 
 const CommentsPage: React.FC = () => {
   // 2. State
-  const [articleId, setArticleId] = useState<string>("");
-  const [searchId, setSearchId] = useState<string>("");
+  const [articleId, setArticleId] = useState<string>('');
+  const [searchId, setSearchId] = useState<string>('');
 
   // 3. Hooks
   // Hook này trả về data là mảng CommentItem
@@ -38,8 +38,8 @@ const CommentsPage: React.FC = () => {
 
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
-      <Card 
-        title={<span className="text-lg font-bold">Quản lý Bình luận theo Bài viết</span>} 
+      <Card
+        title={<span className="text-lg font-bold">Quản lý Bình luận theo Bài viết</span>}
         className="shadow-sm"
       >
         {/* --- Search Bar --- */}
@@ -60,13 +60,16 @@ const CommentsPage: React.FC = () => {
         {/* --- Comments List --- */}
         <div className="bg-white rounded-md">
           {!searchId ? (
-            <Empty description="Vui lòng nhập ID bài viết để xem bình luận" image={Empty.PRESENTED_IMAGE_SIMPLE} />
+            <Empty
+              description="Vui lòng nhập ID bài viết để xem bình luận"
+              image={Empty.PRESENTED_IMAGE_SIMPLE}
+            />
           ) : (
             <List
               loading={isLoading}
               itemLayout="horizontal"
               dataSource={comments as CommentItem[]} // Ép kiểu nếu API trả về any
-              locale={{ emptyText: "Bài viết này chưa có bình luận nào." }}
+              locale={{ emptyText: 'Bài viết này chưa có bình luận nào.' }}
               renderItem={(item) => (
                 <List.Item
                   className="hover:bg-gray-50 transition-colors px-4 rounded-md"
@@ -90,10 +93,10 @@ const CommentsPage: React.FC = () => {
                     title={
                       <div className="flex justify-between items-center">
                         <span className="font-semibold text-blue-700">
-                          {item.userID ? item.userID.fullName : (item.guestName || "Khách vãng lai")}
+                          {item.userID ? item.userID.fullName : item.guestName || 'Khách vãng lai'}
                         </span>
                         <span className="text-xs text-gray-400 font-normal ml-2">
-                          {new Date(item.createdAt).toLocaleString("vi-VN")}
+                          {new Date(item.createdAt).toLocaleString('vi-VN')}
                         </span>
                       </div>
                     }

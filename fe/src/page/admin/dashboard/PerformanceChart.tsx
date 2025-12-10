@@ -1,7 +1,16 @@
-import React from "react";
-import { Card, Typography } from "antd";
-import { BarChart, Bar, CartesianGrid, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from "recharts";
-import { DashboardChartData } from "./constants";
+import React from 'react';
+import { Card, Typography } from 'antd';
+import {
+  BarChart,
+  Bar,
+  CartesianGrid,
+  XAxis,
+  YAxis,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+} from 'recharts';
+import { DashboardChartData } from './constants';
 
 const { Title } = Typography;
 

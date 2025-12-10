@@ -1,7 +1,7 @@
-import axiosInstance from "@/lib/config/axios";
-import { ApiResponse } from "@/types/api";
+import axiosInstance from '@/lib/config/axios';
+import { ApiResponse } from '@/types/api';
 
-const ENDPOINT = "/comments";
+const ENDPOINT = '/comments';
 
 export const CommentService = {
   getByArticle: async (articleId: string): Promise<any[]> => {
@@ -11,5 +11,5 @@ export const CommentService = {
 
   delete: async (id: string): Promise<void> => {
     await axiosInstance.delete(`${ENDPOINT}/${id}`);
-  }
+  },
 };

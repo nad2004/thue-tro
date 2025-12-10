@@ -17,11 +17,14 @@ cloudinary.config({
  * @param {string} folder - Tên folder trên Cloudinary
  * @returns {Promise<object>} Kết quả upload
  */
-export function uploadToCloudinary(fileBuffer, folder) {
+export function uploadToCloudinary(fileBuffer, folder = 'nhatro_articles') {
   return new Promise((resolve, reject) => {
     // Tạo writable stream cho Cloudinary
     const uploadStream = cloudinary.uploader.upload_stream(
-      { folder: folder },
+      { 
+        folder: folder,
+        resource_type: 'auto' // Tự động nhận diện (image/video)
+      },
       (error, result) => {
         if (result) {
           resolve(result);
@@ -34,5 +37,3 @@ export function uploadToCloudinary(fileBuffer, folder) {
     streamifier.createReadStream(fileBuffer).pipe(uploadStream);
   });
 }
-
-// Khởi tạo Cloudinary bằng biến môi trường (Mặc dù đã hardcode theo yêu cầu, nên dùng ENV)

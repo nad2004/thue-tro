@@ -1,0 +1,320 @@
+tags:
+  name: Articles
+  description: Quản lý tin đăng bất động sản (Phòng trọ, căn hộ...)
+
+components:
+  schemas:
+    Article:
+      type: object
+      properties:
+        _id:
+          type: string
+          example: 65a1234567890abcdef12345
+        title:
+          type: string
+          example: Cho thuê phòng trọ giá rẻ Cầu Giấy
+        slug:
+          type: string
+          example: cho-thue-phong-tro-gia-re-cau-giay
+        price:
+          type: number
+          example: 3500000
+        area:
+          type: number
+          example: 25
+        summary:
+          type: string
+          example: Số 10 ngõ 5, Đường Xuân Thủy, Cầu Giấy, Hà Nội
+        content:
+          type: string
+          example: Phòng đầy đủ tiện nghi, điều hòa, nóng lạnh...
+        thumbnail:
+          type: string
+          description: URL ảnh đại diện (Cloudinary)
+          example: https://res.cloudinary.com/demo/image/upload/sample.jpg
+        images:
+          type: array
+          items:
+            type: string
+          description: Danh sách URL ảnh chi tiết
+        categoryID:
+          type: object
+          properties:
+            _id: 
+              type: string
+            categoryName: 
+              type: string
+        authorID:
+          type: object
+          properties:
+            fullName: 
+              type: string
+            avatar: 
+              type: string
+            phoneNumber: 
+              type: string
+        tags:
+          type: array
+          items:
+            type: object
+            properties:
+              _id: 
+                type: string
+              tagName: 
+                type: string
+        status:
+          type: string
+          enum: [Draft, Pending, Published, Hidden, Rented]
+          example: Published
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+paths:
+  /articles:
+    get:
+      summary: Lấy danh sách tin đăng (Search, Filter, Pagination)
+      tags: [Articles]
+      security: [] # Public API
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: integer
+            default: 1
+          description: Trang hiện tại
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            default: 10
+          description: Số lượng bài trên mỗi trang
+        - in: query
+          name: search
+          schema:
+            type: string
+          description: Tìm kiếm theo tiêu đề hoặc địa chỉ (summary)
+        - in: query
+          name: categoryID
+          schema:
+            type: string
+          description: ID của danh mục (Quận/Huyện)
+        - in: query
+          name: minPrice
+          schema:
+            type: number
+          description: Giá thấp nhất
+        - in: query
+          name: maxPrice
+          schema:
+            type: number
+          description: Giá cao nhất
+        - in: query
+          name: minArea
+          schema:
+            type: number
+          description: Diện tích nhỏ nhất
+        - in: query
+          name: maxArea
+          schema:
+            type: number
+          description: Diện tích lớn nhất
+        - in: query
+          name: sort
+          schema:
+            type: string
+            enum: [newest, oldest, price-asc, price-desc]
+            default: newest
+          description: Sắp xếp kết quả
+        - in: query
+          name: status
+          schema:
+            type: string
+            default: Published
+          description: Trạng thái bài viết
+        - in: query
+          name: tags
+          schema:
+            type: array
+            items:
+              type: string
+          style: form
+          explode: true
+          description: "Mảng ID các tiện ích. VD: ?tags=ID1&tags=ID2"
+      responses:
+        200:
+          description: Thành công
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Article'
+                      meta:
+                        type: object
+                        properties:
+                          page: 
+                            type: integer
+                          limit: 
+                            type: integer
+                          total: 
+                            type: integer
+                          totalPages: 
+                            type: integer
+
+    post:
+      summary: Tạo tin đăng mới (Có upload ảnh)
+      tags: [Articles]
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - title
+                - price
+                - area
+                - summary
+                - content
+                - categoryID
+                - thumbnail
+              properties:
+                title:
+                  type: string
+                summary:
+                  type: string
+                  description: Địa chỉ hiển thị ngắn gọn
+                content:
+                  type: string
+                  description: Mô tả chi tiết (HTML hoặc Text)
+                price:
+                  type: number
+                area:
+                  type: number
+                categoryID:
+                  type: string
+                  description: ID của danh mục
+                tags:
+                  type: array
+                  items:
+                    type: string
+                  description: Danh sách ID của Tags (tiện ích)
+                thumbnail:
+                  type: string
+                  format: binary
+                  description: File ảnh đại diện (Bắt buộc)
+                images:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+                  description: Danh sách file ảnh chi tiết (Chọn nhiều file)
+      responses:
+        201:
+          description: Tạo thành công
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Article'
+
+  /articles/{id}:
+    get:
+      summary: Lấy chi tiết tin đăng theo ID
+      tags: [Articles]
+      security: []
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: ID bài viết
+      responses:
+        200:
+          description: Chi tiết bài viết
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Article'
+        404:
+          description: Không tìm thấy bài viết
+
+    put:
+      summary: Cập nhật tin đăng (Có thể update ảnh)
+      tags: [Articles]
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                summary:
+                  type: string
+                content:
+                  type: string
+                price:
+                  type: number
+                area:
+                  type: number
+                categoryID:
+                  type: string
+                status:
+                  type: string
+                  enum: [Draft, Pending, Published, Hidden, Rented]
+                tags:
+                  type: array
+                  items:
+                    type: string
+                thumbnail:
+                  type: string
+                  format: binary
+                  description: Upload ảnh mới để thay thế ảnh cũ (nếu có)
+                images:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+                  description: Upload danh sách ảnh mới (Ghi đè danh sách cũ)
+      responses:
+        200:
+          description: Cập nhật thành công
+
+    delete:
+      summary: Xóa tin đăng
+      tags: [Articles]
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+      responses:
+        200:
+          description: Xóa thành công

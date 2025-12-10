@@ -1,21 +1,16 @@
 // src/lib/axios.ts (hoặc src/axios.ts)
 
-import axios, { 
-  AxiosInstance, 
-  AxiosError, 
-  InternalAxiosRequestConfig, 
-  AxiosResponse 
-} from "axios";
-import { useAuthStore } from "@/store/auth-store";
+import axios, { AxiosInstance, AxiosError, InternalAxiosRequestConfig, AxiosResponse } from 'axios';
+import { useAuthStore } from '@/store/auth-store';
 
 // 1. Định nghĩa URL API
-const baseURL = "http://localhost:3000/api";
+const baseURL = 'http://localhost:3000/api';
 
 const axiosInstance: AxiosInstance = axios.create({
   baseURL,
-  timeout: 10000,
+  timeout: 1000000,
   headers: {
-    "Content-Type": "application/json",
+    'Content-Type': 'application/json',
   },
 });
 
@@ -24,7 +19,7 @@ axiosInstance.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
     // Zustand: Lấy token từ store
     const token = useAuthStore.getState().token;
-    
+
     if (token && config.headers) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -32,7 +27,7 @@ axiosInstance.interceptors.request.use(
   },
   (error: AxiosError) => {
     return Promise.reject(error);
-  }
+  },
 );
 
 // 3. Response Interceptor
@@ -47,10 +42,10 @@ axiosInstance.interceptors.response.use(
       const { logout } = useAuthStore.getState();
       logout();
       // Dùng window.location để refresh cứng, hoặc dùng router navigate nếu component
-      window.location.href = "/login";
+      window.location.href = '/login';
     }
     return Promise.reject(error);
-  }
+  },
 );
 
 export default axiosInstance;

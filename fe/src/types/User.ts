@@ -7,7 +7,7 @@ export interface IUser {
   fullName: string;
   email: string;
   role: UserRole;
-  avatarUrl: string;
+  avatar: string;
   createdAt: string;
 }
 
@@ -18,7 +18,7 @@ export interface IUserBackend {
   fullName?: string;
   email?: string;
   role?: UserRole;
-  avatarUrl?: string;
+  avatar?: string;
   createdAt?: string;
 }
 
@@ -27,16 +27,16 @@ export class User implements IUser {
   fullName: string;
   email: string;
   role: UserRole;
-  avatarUrl: string;
+  avatar: string;
   createdAt: string;
 
-  constructor({ _id, id, fullName, email, role, avatarUrl, createdAt }: IUserBackend) {
-    this.id = id || _id || "";
-    this.fullName = fullName || "";
-    this.email = email || "";
-    this.role = role || "Tenant";
-    this.avatarUrl = avatarUrl || "";
-    this.createdAt = createdAt || ""
+  constructor({ _id, id, fullName, email, role, avatar, createdAt }: IUserBackend) {
+    this.id = id || _id || '';
+    this.fullName = fullName || '';
+    this.email = email || '';
+    this.role = role || 'Tenant';
+    this.avatar = avatar || '';
+    this.createdAt = createdAt || '';
   }
 
   // Helper check quyền

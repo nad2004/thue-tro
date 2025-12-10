@@ -11,7 +11,8 @@ import messageRoute from './routes/message.route.js';
 import helmet from 'helmet';
 import cors from 'cors';
 import morgan from 'morgan';
-
+import swaggerUi from 'swagger-ui-express';
+import { swaggerSpec } from './config/swagger.js';
 dotenv.config();
 
 // Kết nối Database
@@ -25,6 +26,7 @@ app.use(helmet());
 app.use(cors());
 app.use(morgan('tiny')); // Logging HTTP requests
 app.use(express.json()); // Cho phép đọc body JSON
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // Route chính
 app.use('/api/user', userRoutes);
@@ -49,4 +51,5 @@ app.use((req, res, next) => {
 
 app.listen(PORT, () => {
   console.log(`Server đang chạy tại http://localhost:${PORT}`);
+  console.log(`📄 Swagger Docs available at http://localhost:${PORT}/api-docs`);
 });

@@ -1,7 +1,16 @@
-import React from "react";
-import { Card, Typography } from "antd";
-import { LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from "recharts";
-import { DashboardChartData } from "./constants";
+import React from 'react';
+import { Card, Typography } from 'antd';
+import {
+  LineChart,
+  Line,
+  CartesianGrid,
+  XAxis,
+  YAxis,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+} from 'recharts';
+import { DashboardChartData } from './constants';
 
 const { Title } = Typography;
 
@@ -19,12 +28,22 @@ const OverviewChart: React.FC<OverviewChartProps> = ({ data }) => {
             <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
             <XAxis dataKey="name" stroke="#8c8c8c" />
             <YAxis stroke="#8c8c8c" />
-            <Tooltip 
-              contentStyle={{ borderRadius: 8, border: 'none', boxShadow: '0 2px 8px rgba(0,0,0,0.15)' }} 
+            <Tooltip
+              contentStyle={{
+                borderRadius: 8,
+                border: 'none',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+              }}
             />
             <Legend />
             <Line type="monotone" dataKey="views" stroke="#1677ff" strokeWidth={2} dot={{ r: 4 }} />
-            <Line type="monotone" dataKey="articles" stroke="#722ed1" strokeWidth={2} dot={{ r: 4 }} />
+            <Line
+              type="monotone"
+              dataKey="articles"
+              stroke="#722ed1"
+              strokeWidth={2}
+              dot={{ r: 4 }}
+            />
           </LineChart>
         </ResponsiveContainer>
       </div>

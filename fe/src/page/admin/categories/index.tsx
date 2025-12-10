@@ -1,16 +1,16 @@
-import React, { useState } from "react";
-import { Card, Button, Form, Input, Modal, Table, Space, Popconfirm, Tooltip, message } from "antd";
-import { PlusOutlined, EditOutlined, DeleteOutlined } from "@ant-design/icons";
-import type { ColumnsType } from "antd/es/table";
+import React, { useState } from 'react';
+import { Card, Button, Form, Input, Modal, Table, Space, Popconfirm, Tooltip, message } from 'antd';
+import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import type { ColumnsType } from 'antd/es/table';
 
 // Hooks & Models
-import { 
-  useCategories, 
-  useCreateCategory, 
-  useUpdateCategory, 
-  useDeleteCategory 
-} from "@/hooks/useCategories";
-import { Category, CreateCategoryPayload } from "@/types/Category";
+import {
+  useCategories,
+  useCreateCategory,
+  useUpdateCategory,
+  useDeleteCategory,
+} from '@/hooks/useCategories';
+import { Category, CreateCategoryPayload } from '@/types/Category';
 
 const CategoriesPage: React.FC = () => {
   // 1. State
@@ -30,7 +30,7 @@ const CategoriesPage: React.FC = () => {
     if (categoryRecord) {
       form.setFieldsValue({
         categoryName: categoryRecord.categoryName,
-        categorySlug: categoryRecord.categorySlug
+        categorySlug: categoryRecord.categorySlug,
       });
     } else {
       form.resetFields();
@@ -60,33 +60,33 @@ const CategoriesPage: React.FC = () => {
 
   // 4. Cấu hình Cột cho Table
   const columns: ColumnsType<Category> = [
-    { 
-      title: "Tên danh mục", 
-      dataIndex: "categoryName", 
-      key: "categoryName",
-      render: (text) => <span className="font-semibold">{text}</span>
-    },
-    { 
-      title: "Slug", 
-      dataIndex: "categorySlug", 
-      key: "categorySlug",
-      render: (text) => <span className="text-gray-500">{text}</span>
+    {
+      title: 'Tên danh mục',
+      dataIndex: 'categoryName',
+      key: 'categoryName',
+      render: (text) => <span className="font-semibold">{text}</span>,
     },
     {
-      title: "Hành động",
-      key: "action",
+      title: 'Slug',
+      dataIndex: 'categorySlug',
+      key: 'categorySlug',
+      render: (text) => <span className="text-gray-500">{text}</span>,
+    },
+    {
+      title: 'Hành động',
+      key: 'action',
       width: 120,
       align: 'center',
       render: (_, record) => (
         <Space size="small">
           <Tooltip title="Chỉnh sửa">
-            <Button 
-              type="text" 
-              icon={<EditOutlined className="text-blue-600" />} 
-              onClick={() => handleOpenForm(record)} 
+            <Button
+              type="text"
+              icon={<EditOutlined className="text-blue-600" />}
+              onClick={() => handleOpenForm(record)}
             />
           </Tooltip>
-          
+
           <Tooltip title="Xóa">
             <Popconfirm
               title="Xóa danh mục này?"
@@ -126,7 +126,7 @@ const CategoriesPage: React.FC = () => {
 
       {/* Modal Form */}
       <Modal
-        title={editingCategory ? "Cập nhật danh mục" : "Tạo danh mục mới"}
+        title={editingCategory ? 'Cập nhật danh mục' : 'Tạo danh mục mới'}
         open={formVisible}
         onCancel={handleCloseForm}
         onOk={() => form.submit()}
@@ -134,16 +134,16 @@ const CategoriesPage: React.FC = () => {
         destroyOnClose
       >
         <Form form={form} layout="vertical" onFinish={handleSubmit}>
-          <Form.Item 
-            name="categoryName" 
-            label="Tên danh mục" 
-            rules={[{ required: true, message: "Vui lòng nhập tên danh mục" }]}
+          <Form.Item
+            name="categoryName"
+            label="Tên danh mục"
+            rules={[{ required: true, message: 'Vui lòng nhập tên danh mục' }]}
           >
             <Input placeholder="Ví dụ: Công nghệ" />
           </Form.Item>
-          
-          <Form.Item 
-            name="categorySlug" 
+
+          <Form.Item
+            name="categorySlug"
             label="Slug (URL)"
             help="Để trống sẽ tự động tạo từ tên danh mục"
           >

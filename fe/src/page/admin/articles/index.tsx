@@ -1,28 +1,48 @@
-import React, { useState } from "react";
-import { Card, Button, Space, Input, Select, Popconfirm, Tag as AntTag, Table, Tooltip } from "antd";
-import { PlusOutlined, EditOutlined, DeleteOutlined, SearchOutlined } from "@ant-design/icons";
-import type { ColumnsType, TablePaginationConfig } from "antd/es/table";
+import React, { useState } from 'react';
+import {
+  Card,
+  Button,
+  Space,
+  Input,
+  Select,
+  Popconfirm,
+  Tag as AntTag,
+  Table,
+  Tooltip,
+} from 'antd';
+import { PlusOutlined, EditOutlined, DeleteOutlined, SearchOutlined } from '@ant-design/icons';
+import type { ColumnsType, TablePaginationConfig } from 'antd/es/table';
 
-import ArticleForm from "./ArticleForm";
-import { useArticles, useCreateArticle, useUpdateArticle, useDeleteArticle } from "@/hooks/useArticles";
-import { useCategories } from "@/hooks/useCategories";
-import { Article, CreateArticlePayload } from "@/types/Article";
-import { QueryParams } from "@/types/api";
+import ArticleForm from './ArticleForm';
+import {
+  useArticles,
+  useCreateArticle,
+  useUpdateArticle,
+  useDeleteArticle,
+} from '@/hooks/useArticles';
+import { useCategories } from '@/hooks/useCategories';
+import { Article, CreateArticlePayload } from '@/types/Article';
+import { QueryParams } from '@/types/api';
 
 const ArticlesPage: React.FC = () => {
   // 1. State quản lý Modal và Filters
   const [formVisible, setFormVisible] = useState(false);
   const [editingArticle, setEditingArticle] = useState<Article | null>(null);
-  const [filters, setFilters] = useState<QueryParams>({ page: 1, limit: 10, search: "", categoryId: undefined });
+  const [filters, setFilters] = useState<QueryParams>({
+    page: 1,
+    limit: 10,
+    search: '',
+    categoryId: undefined,
+  });
 
   // 2. Gọi Hooks React Query
   const { data, isLoading } = useArticles(filters); // data trả về { articles: Article[], total: number }
   const { data: categories = [] } = useCategories();
-  
+
   const createArticle = useCreateArticle();
   const updateArticle = useUpdateArticle();
   const deleteArticle = useDeleteArticle();
-// console.log('data:', data)
+  console.log('data:', data);
   // 3. Handlers
   const handleOpenForm = (articleRecord: Article | null = null) => {
     setEditingArticle(articleRecord);
@@ -59,56 +79,60 @@ const ArticlesPage: React.FC = () => {
   // 4. Cấu hình cột cho Table Antd
   const columns: ColumnsType<Article> = [
     {
-      title: "Tiêu đề",
-      dataIndex: "title",
-      key: "title",
-      width: "30%",
+      title: 'Tiêu đề',
+      dataIndex: 'title',
+      key: 'title',
+      width: '30%',
       render: (text) => <span className="font-semibold text-gray-700">{text}</span>,
     },
     {
-      title: "Danh mục",
-      dataIndex: "categoryName", // Nhờ Model Article, ta có sẵn trường này
-      key: "category",
-      render: (text) => <AntTag color="blue">{text || "Chưa phân loại"}</AntTag>,
+      title: 'Danh mục',
+      dataIndex: 'categoryName',
+      key: 'category',
+      render: (text) => <AntTag color="blue">{text || 'Chưa phân loại'}</AntTag>,
     },
     {
-      title: "Tác giả",
-      dataIndex: "authorName",
-      key: "author",
+      title: 'Tác giả',
+      dataIndex: 'authorID',
+      key: 'authorID',
+      render: (author) => (
+        <span className="font-semibold text-gray-700">{author?.fullName || 'Ẩn danh'}</span>
+      ),
     },
     {
-      title: "Trạng thái",
-      dataIndex: "status",
-      key: "status",
+      title: 'Trạng thái',
+      dataIndex: 'status',
+      key: 'status',
       width: 120,
-      align: "center",
+      align: 'center',
       render: (status) => {
-        const color = status === "Published" ? "success" : status === "Draft" ? "warning" : "default";
+        const color =
+          status === 'Published' ? 'success' : status === 'Draft' ? 'warning' : 'default';
         return <AntTag color={color}>{status}</AntTag>;
       },
     },
     {
-      title: "Ngày tạo",
-      dataIndex: "createdAt",
-      key: "createdAt",
+      title: 'Ngày tạo',
+      dataIndex: 'createdAt',
+      key: 'createdAt',
       width: 150,
-      render: (date: Date) => date ? new Date(date).toLocaleDateString("vi-VN") : "-",
+      render: (date: Date) => (date ? new Date(date).toLocaleDateString('vi-VN') : '-'),
     },
     {
-      title: "Hành động",
-      key: "action",
-      align: "center",
+      title: 'Hành động',
+      key: 'action',
+      align: 'center',
       width: 120,
       render: (_, record) => (
         <Space size="small">
           <Tooltip title="Chỉnh sửa">
-            <Button 
-              type="text" 
-              icon={<EditOutlined className="text-blue-500" />} 
-              onClick={() => handleOpenForm(record)} 
+            <Button
+              type="text"
+              icon={<EditOutlined className="text-blue-500" />}
+              onClick={() => handleOpenForm(record)}
             />
           </Tooltip>
-          
+
           <Tooltip title="Xóa">
             <Popconfirm
               title="Xóa bài viết?"
@@ -143,7 +167,9 @@ const ArticlesPage: React.FC = () => {
             <Input
               placeholder="Tìm theo tiêu đề..."
               prefix={<SearchOutlined className="text-gray-400" />}
-              onPressEnter={(e) => setFilters(prev => ({ ...prev, search: e.currentTarget.value, page: 1 }))}
+              onPressEnter={(e) =>
+                setFilters((prev) => ({ ...prev, search: e.currentTarget.value, page: 1 }))
+              }
               style={{ width: 300 }}
               allowClear
             />
@@ -151,10 +177,12 @@ const ArticlesPage: React.FC = () => {
               placeholder="Lọc danh mục"
               style={{ width: 200 }}
               allowClear
-              onChange={(val) => setFilters(prev => ({ ...prev, categoryId: val, page: 1 }))}
+              onChange={(val) => setFilters((prev) => ({ ...prev, categoryId: val, page: 1 }))}
             >
               {categories.map((cat) => (
-                <Select.Option key={cat.id} value={cat.id}>{cat.categoryName}</Select.Option>
+                <Select.Option key={cat.id} value={cat.id}>
+                  {cat.categoryName}
+                </Select.Option>
               ))}
             </Select>
           </Space>

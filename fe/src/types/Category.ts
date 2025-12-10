@@ -22,25 +22,24 @@ export class Category implements ICategory {
   parentCategoryId: string | null;
 
   constructor(data: any) {
-    this.id = data?.id || data?._id || "";
-    
+    this.id = data?.id || data?._id || '';
+
     // Mapping linh hoạt
-    this.categoryName = data?.categoryName || data?.name || "";
-    this.categorySlug = data?.categorySlug || data?.slug || "";
-    this.description = data?.description || "";
-    
+    this.categoryName = data?.categoryName || data?.name || '';
+    this.categorySlug = data?.categorySlug || data?.slug || '';
+    this.description = data?.description || '';
+
     // Xử lý logic parentCategory (Object hoặc ID string)
     const parent = data?.parentCategory;
-    this.parentCategoryId = (typeof parent === 'object' && parent !== null) 
-      ? parent._id 
-      : (parent || null);
+    this.parentCategoryId =
+      typeof parent === 'object' && parent !== null ? parent._id : parent || null;
   }
 
   toApiPayload(): CreateCategoryPayload {
     return {
       categoryName: this.categoryName,
       categorySlug: this.categorySlug,
-      parentCategory: this.parentCategoryId
+      parentCategory: this.parentCategoryId,
     };
   }
 }

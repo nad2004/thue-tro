@@ -19,17 +19,10 @@ import { chartData, pieData, PIE_COLORS } from './constants';
 
 const DashboardPage: React.FC = () => {
   return (
-    <div
-      style={{ padding: 24, minHeight: '100vh', backgroundColor: '#f5f5f5' }}
-    >
+    <div style={{ padding: 24, minHeight: '100vh', backgroundColor: '#f5f5f5' }}>
       <Space direction="vertical" size="large" style={{ display: 'flex' }}>
         {/* 1. Breadcrumb */}
-        <Breadcrumb
-          items={[
-            { title: <HomeOutlined />, href: '/' },
-            { title: 'Dashboard' },
-          ]}
-        />
+        <Breadcrumb items={[{ title: <HomeOutlined />, href: '/' }, { title: 'Dashboard' }]} />
 
         {/* 2. Stats Cards (Grid 4 cột) */}
         <Row gutter={[16, 16]}>
@@ -42,12 +35,7 @@ const DashboardPage: React.FC = () => {
             />
           </Col>
           <Col xs={24} sm={12} lg={6}>
-            <StatsCard
-              title="Total Views"
-              value="24,500"
-              icon={<EyeOutlined />}
-              color="#52c41a"
-            />
+            <StatsCard title="Total Views" value="24,500" icon={<EyeOutlined />} color="#52c41a" />
           </Col>
           <Col xs={24} sm={12} lg={6}>
             <StatsCard
@@ -58,12 +46,7 @@ const DashboardPage: React.FC = () => {
             />
           </Col>
           <Col xs={24} sm={12} lg={6}>
-            <StatsCard
-              title="Total Files"
-              value={45}
-              icon={<FileOutlined />}
-              color="#eb2f96"
-            />
+            <StatsCard title="Total Files" value={45} icon={<FileOutlined />} color="#eb2f96" />
           </Col>
         </Row>
 

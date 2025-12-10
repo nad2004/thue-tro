@@ -20,6 +20,6 @@ export interface QueryParams {
   sortBy?: string;
   order?: 'asc' | 'desc';
   categoryId?: string; // Lọc theo danh mục
-  authorId?: string;   // Lọc theo tác giả
-  [key: string]: any;  // Cho phép các tham số mở rộng khác
+  authorId?: string; // Lọc theo tác giả
+  [key: string]: any; // Cho phép các tham số mở rộng khác
 }

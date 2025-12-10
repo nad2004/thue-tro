@@ -1,10 +1,10 @@
-import React from "react";
-import { Navigate, Outlet } from "react-router-dom";
-import { useAuthStatus } from "@/hooks/useAuth"; 
-import { Spin, Result, Button } from "antd";
+import React from 'react';
+import { Navigate, Outlet } from 'react-router-dom';
+import { useAuthStatus } from '@/hooks/useAuth';
+import { Spin, Result, Button } from 'antd';
 
 const AdminRoute: React.FC = () => {
-  const { isLoggedIn, isLoading, isAdmin } = useAuthStatus(); 
+  const { isLoggedIn, isLoading, isAdmin } = useAuthStatus();
 
   if (isLoading) {
     return (
@@ -27,7 +27,11 @@ const AdminRoute: React.FC = () => {
           status="403"
           title="403"
           subTitle="Xin lỗi, bạn không có quyền truy cập trang này."
-          extra={<Button type="primary" href="/">Về trang chủ</Button>}
+          extra={
+            <Button type="primary" href="/">
+              Về trang chủ
+            </Button>
+          }
         />
       </div>
     );

@@ -15,14 +15,12 @@ export const useUpdateUserRole = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ id, role }: { id: string; role: UserRole }) =>
-      UserService.updateRole(id, role),
+    mutationFn: ({ id, role }: { id: string; role: UserRole }) => UserService.updateRole(id, role),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['users'] });
       message.success('Cập nhật quyền thành công');
     },
-    onError: (e: any) =>
-      message.error(e.response?.data?.message || 'Lỗi cập nhật'),
+    onError: (e: any) => message.error(e.response?.data?.message || 'Lỗi cập nhật'),
   });
 };
 
@@ -35,7 +33,6 @@ export const useDeleteUser = () => {
       queryClient.invalidateQueries({ queryKey: ['users'] });
       message.success('Đã xóa người dùng');
     },
-    onError: (e: any) =>
-      message.error(e.response?.data?.message || 'Lỗi xóa người dùng'),
+    onError: (e: any) => message.error(e.response?.data?.message || 'Lỗi xóa người dùng'),
   });
 };

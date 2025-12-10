@@ -1,10 +1,10 @@
-import React from "react";
-import { Navigate, Outlet } from "react-router-dom";
-import { useAuthStatus } from "@/hooks/useAuth"; 
-import { Spin } from "antd"; // Hoặc component Loading của bạn
+import React from 'react';
+import { Navigate, Outlet } from 'react-router-dom';
+import { useAuthStatus } from '@/hooks/useAuth';
+import { Spin } from 'antd'; // Hoặc component Loading của bạn
 
 const PublicRoute: React.FC = () => {
-  const { isLoggedIn, isLoading } = useAuthStatus(); 
+  const { isLoggedIn, isLoading } = useAuthStatus();
 
   if (isLoading) {
     // UI Loading chuyên nghiệp hơn

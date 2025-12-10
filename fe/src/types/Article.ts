@@ -1,113 +1,136 @@
-// src/models/Article.ts
+// src/types/Article.ts
 
-import { IUser, User } from './User'; // Giả sử bạn có class User tương tự Category
-import { ICategory, Category } from './Category';
-import { ITag, Tag } from './Tag';
+import { ICategory } from './Category';
+import { ITag } from './Tag';
+import { IUser } from './User';
 
-export type ArticleStatus = 'Draft' | 'Published' | 'Archived' | 'Pending';
-
-// Interface cho Frontend (Dữ liệu hiển thị)
 export interface IArticle {
   id: string;
   title: string;
-  content: string;
-  slug: string;
   summary: string;
-  status: ArticleStatus;
-  createdAt: Date;
-  price: number;       
-  area: number;        
-  thumbnail: string;   
-  // isFeatured: boolean;
-  // Các trường quan hệ dạng Object đầy đủ
-  category: ICategory | null;
+  content: string;
+  thumbnail: string;
+  images: string[];
+  price: number;
+  area: number;
+  status: string;
+  categoryID: ICategory | null;
   tags: ITag[];
-  author: IUser | null;
+  authorID: IUser | null;
+  createdAt: string;
+  updatedAt: string;
 }
 
-// Interface Payload gửi lên API (DTO)
+// Payload để tạo/cập nhật bài viết (gửi qua FormData)
 export interface CreateArticlePayload {
   title: string;
-  slug: string;
   summary: string;
   content: string;
-  categoryID: string; // API thường chỉ nhận ID
-  tags: string[];     // Array các ID
-  status: ArticleStatus;
+  price: number;
+  area: number;
+  categoryID: string;
+  tags?: string[]; // Array of tag IDs
+  thumbnail?: File | Blob; // File object cho thumbnail
+  images?: (File | Blob)[]; // Array of File objects cho images
+  status?: string; // 'Published' | 'Draft' | 'Pending'
 }
 
 export class Article implements IArticle {
   id: string;
   title: string;
-  content: string;
-  slug: string;
   summary: string;
-  status: ArticleStatus;
-  createdAt: Date;
-  price: number;       
-  area: number;        
-  thumbnail: string;  
-  category: ICategory | null;
+  content: string;
+  thumbnail: string;
+  images: string[];
+  price: number;
+  area: number;
+  status: string;
+  categoryID: ICategory | null;
   tags: ITag[];
-  author: IUser | null;
+  authorID: IUser | null;
+  createdAt: string;
+  updatedAt: string;
 
   constructor(data: any) {
-    // 1. Map ID & Basic Fields
-    this.id = data?.id || data?._id || "";
-    this.title = data?.title || "";
-    this.content = data?.content || "";
-    this.slug = data?.slug || "";
-    this.summary = data?.summary || "";
-    this.status = (data?.status as ArticleStatus) || "Draft";
-    this.createdAt = data?.createdAt ? new Date(data.createdAt) : new Date();
-    this.price = data?.price || 0
-    this.area = data?.area || 0
-    this.thumbnail = data?.thumbnail || "fallback-img.png";
-    // 2. Map Category (Xử lý linh hoạt cả trường hợp API trả về ID hoặc Object)
-    // Ưu tiên check field 'category' hoặc 'categoryID' nếu nó là object
-    const rawCat = data?.category || data?.categoryID || data?.categoryId;
-    if (typeof rawCat === 'object' && rawCat !== null) {
-      this.category = new Category(rawCat);
-    } else {
-      this.category = null; 
-      // Nếu API chỉ trả về chuỗi ID mà không populate, 
-      // ta set null hoặc tạo một Category rỗng chỉ có ID tùy logic dự án
-    }
+    this.id = data?.id || data?._id || '';
+    this.title = data?.title || '';
+    this.summary = data?.summary || '';
+    this.content = data?.content || '';
+    this.thumbnail = data?.thumbnail || '';
+    this.images = data?.images || [];
+    this.price = data?.price || 0;
+    this.area = data?.area || 0;
+    this.status = data?.status || 'Draft';
 
-    // 3. Map Tags
-    const rawTags = data?.tags || data?.tagIds || [];
-    if (Array.isArray(rawTags)) {
-      this.tags = rawTags.map((t: any) => {
-        // Nếu tag là object -> new Tag, nếu là string -> bỏ qua hoặc tạo tag giả
-        if (typeof t === 'object' && t !== null) return new Tag(t);
-        return new Tag({ _id: t, tagName: 'Unknown' }); // Fallback
-      });
-    } else {
-      this.tags = [];
-    }
-    
-    // 4. Map Author
-    const rawAuthor = data?.author || data?.authorID || data?.authorId;
-    if (typeof rawAuthor === 'object' && rawAuthor !== null) {
-      // Giả sử bạn có class User, nếu chưa có thì dùng object literal
-      this.author = new User(rawAuthor); 
-    } else {
-      this.author = null;
-    }
+    // Map category
+    this.categoryID = data?.categoryID
+      ? {
+          id: data.categoryID.id || data.categoryID._id,
+          categoryName: data.categoryID.categoryName || data.categoryID.name,
+          categorySlug: data.categoryID.categorySlug || data.categoryID.slug,
+          description: data.categoryID.description || '',
+          parentCategoryId: data.categoryID.parentCategoryId || null,
+        }
+      : null;
+
+    // Map tags
+    this.tags = Array.isArray(data?.tags)
+      ? data.tags.map((tag: any) => ({
+          id: tag.id || tag._id,
+          tagName: tag.tagName || tag.name,
+          tagSlug: tag.tagSlug || tag.slug,
+        }))
+      : [];
+
+    // Map author
+    this.authorID = data?.authorID
+      ? {
+          id: data.authorID.id || data.authorID._id,
+          // username: data.author.username || "",
+          email: data.authorID.email || '',
+          fullName: data.authorID.fullName || '',
+          avatar: data.authorID.avatar || data.authorID.avatar || '',
+          // phone: data.authorID.phone || "",
+          role: data.authorID.role || 'Tenant',
+          createdAt: data.authorID.createdAt || '',
+        }
+      : null;
+
+    this.createdAt = data?.createdAt || new Date().toISOString();
+    this.updatedAt = data?.updatedAt || new Date().toISOString();
   }
 
-  // Chuyển đổi dữ liệu từ Object -> ID để gửi về Backend
-  toApiPayload(): CreateArticlePayload {
-    return {
-      title: this.title,
-      slug: this.slug,
-      summary: this.summary,
-      content: this.content,
-      // Lấy ID từ object category hiện tại
-      categoryID: this.category?.id || "",
-      // Map mảng object tags ra mảng ID
-      tags: this.tags.map(tag => tag.id),
-      status: this.status
-    };
+  // Helper method để tạo FormData từ payload
+  static toFormData(payload: CreateArticlePayload): FormData {
+    const formData = new FormData();
+
+    formData.append('title', payload.title);
+    formData.append('summary', payload.summary);
+    formData.append('content', payload.content);
+    formData.append('price', payload.price.toString());
+    formData.append('area', payload.area.toString());
+    formData.append('categoryID', payload.categoryID);
+
+    if (payload.thumbnail) {
+      formData.append('thumbnail', payload.thumbnail);
+    }
+
+    if (payload.tags && payload.tags.length > 0) {
+      payload.tags.forEach((tagId) => {
+        formData.append('tags', tagId);
+      });
+    }
+
+    if (payload.images && payload.images.length > 0) {
+      payload.images.forEach((file) => {
+        formData.append('images', file);
+      });
+    }
+
+    if (payload.status) {
+      formData.append('status', payload.status);
+    }
+
+    return formData;
   }
 }

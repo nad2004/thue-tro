@@ -1,10 +1,10 @@
-import React from "react";
-import { Navigate, Outlet, useLocation } from "react-router-dom";
-import { useAuthStatus } from "@/hooks/useAuth"; 
-import { Spin } from "antd";
+import React from 'react';
+import { Navigate, Outlet, useLocation } from 'react-router-dom';
+import { useAuthStatus } from '@/hooks/useAuth';
+import { Spin } from 'antd';
 
 const ProtectedRoute: React.FC = () => {
-  const { isLoggedIn, isLoading } = useAuthStatus(); 
+  const { isLoggedIn, isLoading } = useAuthStatus();
   const location = useLocation();
 
   if (isLoading) {
@@ -18,7 +18,7 @@ const ProtectedRoute: React.FC = () => {
   // Nếu chưa login -> Đá về Login
   if (!isLoggedIn) {
     // state={{ from: location }} giúp redirect lại trang cũ sau khi login thành công
-    return <Navigate to="/login" state={{ from: location }} replace />; 
+    return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
   return <Outlet />;

@@ -60,7 +60,6 @@ fe/.next/
 fe/node_modules/
 fe/out/
 fe/.vercel
-fe/.turbo
 
 # --- Backend (Express specific) ---
 be/node_modules/

@@ -1,5 +1,5 @@
-import React from "react";
-import { Card, Statistic } from "antd";
+import React from 'react';
+import { Card, Statistic } from 'antd';
 
 interface StatsCardProps {
   title: string;

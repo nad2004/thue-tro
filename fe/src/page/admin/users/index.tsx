@@ -1,19 +1,31 @@
-import React, { useState } from "react";
-import { Card, Table, Select, Tag, Popconfirm, Button, Avatar, Space, Tooltip, Typography, Input } from "antd";
-import { DeleteOutlined, UserOutlined, SearchOutlined } from "@ant-design/icons";
-import type { ColumnsType } from "antd/es/table";
+import React, { useState } from 'react';
+import {
+  Card,
+  Table,
+  Select,
+  Tag,
+  Popconfirm,
+  Button,
+  Avatar,
+  Space,
+  Tooltip,
+  Typography,
+  Input,
+} from 'antd';
+import { DeleteOutlined, UserOutlined, SearchOutlined } from '@ant-design/icons';
+import type { ColumnsType } from 'antd/es/table';
 
 // Hooks & Models
-import { useUsers, useUpdateUserRole, useDeleteUser } from "@/hooks/useUsers";
-import { User, UserRole } from "@/types/User";
-import { QueryParams } from "@/types/api";
+import { useUsers, useUpdateUserRole, useDeleteUser } from '@/hooks/useUsers';
+import { User, UserRole } from '@/types/User';
+import { QueryParams } from '@/types/api';
 
 const { Text } = Typography;
 
 const UsersPage: React.FC = () => {
   // 1. State & Hooks
-  const [filters, setFilters] = useState<QueryParams>({ page: 1, limit: 10, search: "" });
-  
+  const [filters, setFilters] = useState<QueryParams>({ page: 1, limit: 10, search: '' });
+
   const { data: users = [], isLoading } = useUsers(filters); // Giả sử hook trả về User[]
   const updateUserRole = useUpdateUserRole();
   const deleteUser = useDeleteUser();
@@ -29,33 +41,35 @@ const UsersPage: React.FC = () => {
       limit: pagination.pageSize,
     }));
   };
-
+  console.log(users)
   // 3. Cấu hình Cột
   const columns: ColumnsType<User> = [
     {
-      title: "Người dùng",
-      key: "user",
+      title: 'Người dùng',
+      key: 'user',
       width: 250,
       render: (_, record) => (
         <Space>
-          <Avatar src={record.avatarUrl} icon={<UserOutlined />} size="large" />
+          <Avatar src={record.avatar} icon={<UserOutlined />} size="large" />
           <div className="flex flex-col">
             <Text strong>{record.fullName}</Text>
-            <Text type="secondary" className="text-xs">@{record.id.slice(0, 6)}...</Text>
+            <Text type="secondary" className="text-xs">
+              @{record.id.slice(0, 6)}...
+            </Text>
           </div>
         </Space>
       ),
     },
     {
-      title: "Email",
-      dataIndex: "email",
-      key: "email",
+      title: 'Email',
+      dataIndex: 'email',
+      key: 'email',
       render: (email) => <span className="text-gray-600">{email}</span>,
     },
     {
-      title: "Vai trò",
-      dataIndex: "role",
-      key: "role",
+      title: 'Vai trò',
+      dataIndex: 'role',
+      key: 'role',
       width: 150,
       render: (role: UserRole, record) => (
         <Select
@@ -78,16 +92,16 @@ const UsersPage: React.FC = () => {
       ),
     },
     {
-      title: "Ngày tham gia",
-      dataIndex: "createdAt", // Giả sử model User có field này (hoặc created_at)
-      key: "createdAt",
-      render: (date) => date ? new Date(date).toLocaleDateString("vi-VN") : "-",
+      title: 'Ngày tham gia',
+      dataIndex: 'createdAt', // Giả sử model User có field này (hoặc created_at)
+      key: 'createdAt',
+      render: (date) => (date ? new Date(date).toLocaleDateString('vi-VN') : '-'),
     },
     {
-      title: "Hành động",
-      key: "action",
+      title: 'Hành động',
+      key: 'action',
       width: 100,
-      align: "center",
+      align: 'center',
       render: (_, record) => (
         <Tooltip title="Xóa người dùng">
           <Popconfirm
@@ -113,11 +127,11 @@ const UsersPage: React.FC = () => {
       >
         {/* Toolbar */}
         <div className="mb-4 flex justify-between">
-          <Input 
-            placeholder="Tìm theo tên, email..." 
+          <Input
+            placeholder="Tìm theo tên, email..."
             prefix={<SearchOutlined className="text-gray-400" />}
             style={{ width: 300 }}
-            onPressEnter={(e) => setFilters(prev => ({ ...prev, search: e.currentTarget.value }))}
+            onPressEnter={(e) => setFilters((prev) => ({ ...prev, search: e.currentTarget.value }))}
             allowClear
           />
         </div>
