@@ -17,6 +17,8 @@ import Register from './page/register';
 // // Customer Pages (Ví dụ)
 import HomePage from './page/client/home';
 import DetailPage from './page/client/detail';
+import PostArticlePage from './page/client/post-new';
+import MyArticlesPage from './page/client/my-article';
 // import RoomDetail from "./page/room-detail";
 
 // Admin/Landlord Pages (Các trang hiện có của bạn)
@@ -34,6 +36,8 @@ const App: React.FC = () => {
         <Route element={<ClientLayout />}>
           <Route path="/" element={<HomePage />} />
           <Route path="/detail/:id" element={<DetailPage />} />
+          <Route path="/post-new" element={<PostArticlePage />} />
+          <Route path="/my-article" element={<MyArticlesPage />} />
         </Route>
         <Route element={<PublicRoute />}>
           <Route path="/login" element={<Login />} />

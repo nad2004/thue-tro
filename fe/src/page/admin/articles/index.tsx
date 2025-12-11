@@ -1,30 +1,34 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import {
   Card,
   Button,
-  Space,
-  Input,
-  Select,
-  Popconfirm,
   Tag as AntTag,
   Table,
-  Tooltip,
 } from 'antd';
-import { PlusOutlined, EditOutlined, DeleteOutlined, SearchOutlined } from '@ant-design/icons';
+import { 
+  PlusOutlined, 
+} from '@ant-design/icons';
 import type { ColumnsType, TablePaginationConfig } from 'antd/es/table';
+import { useNavigate } from 'react-router-dom';
 
 import ArticleForm from './ArticleForm';
+import ArticleActions from './ArticleActions';
+import ArticleStatusTag from './ArticleStatusTag';
+import ArticleTableToolbar from './ArticleTableToolbar';
 import {
   useArticles,
   useCreateArticle,
   useUpdateArticle,
   useDeleteArticle,
+  useApproveArticle,
 } from '@/hooks/useArticles';
 import { useCategories } from '@/hooks/useCategories';
 import { Article, CreateArticlePayload } from '@/types/Article';
 import { QueryParams } from '@/types/api';
 
 const ArticlesPage: React.FC = () => {
+  const navigate = useNavigate();
+  
   // 1. State quản lý Modal và Filters
   const [formVisible, setFormVisible] = useState(false);
   const [editingArticle, setEditingArticle] = useState<Article | null>(null);
@@ -36,25 +40,26 @@ const ArticlesPage: React.FC = () => {
   });
 
   // 2. Gọi Hooks React Query
-  const { data, isLoading } = useArticles(filters); // data trả về { articles: Article[], total: number }
+  const { data, isLoading } = useArticles(filters);
   const { data: categories = [] } = useCategories();
 
   const createArticle = useCreateArticle();
   const updateArticle = useUpdateArticle();
   const deleteArticle = useDeleteArticle();
-  console.log('data:', data);
-  // 3. Handlers
-  const handleOpenForm = (articleRecord: Article | null = null) => {
+  const approveArticle = useApproveArticle();
+
+  // 3. Handlers với useCallback
+  const handleOpenForm = useCallback((articleRecord: Article | null = null) => {
     setEditingArticle(articleRecord);
     setFormVisible(true);
-  };
+  }, []);
 
-  const handleCloseForm = () => {
+  const handleCloseForm = useCallback(() => {
     setFormVisible(false);
     setEditingArticle(null);
-  };
+  }, []);
 
-  const handleSubmit = async (values: CreateArticlePayload) => {
+  const handleSubmit = useCallback(async (values: CreateArticlePayload) => {
     try {
       if (editingArticle) {
         await updateArticle.mutateAsync({ id: editingArticle.id, ...values });
@@ -65,19 +70,50 @@ const ArticlesPage: React.FC = () => {
     } catch (error) {
       console.error(error);
     }
-  };
+  }, [editingArticle, updateArticle, createArticle, handleCloseForm]);
 
-  // Xử lý khi người dùng đổi trang trên Table Antd
-  const handleTableChange = (pagination: TablePaginationConfig) => {
+  const handleTableChange = useCallback((pagination: TablePaginationConfig) => {
     setFilters((prev) => ({
       ...prev,
       page: pagination.current || 1,
       limit: pagination.pageSize || 10,
     }));
-  };
+  }, []);
 
-  // 4. Cấu hình cột cho Table Antd
-  const columns: ColumnsType<Article> = [
+  const handleSearch = useCallback((value: string) => {
+    setFilters((prev) => ({
+      ...prev,
+      search: value,
+      page: 1,
+    }));
+  }, []);
+
+  const handleCategoryChange = useCallback((value: string) => {
+    setFilters((prev) => ({
+      ...prev,
+      categoryId: value,
+      page: 1,
+    }));
+  }, []);
+
+  const handleView = useCallback((id: string) => {
+    navigate(`/detail/${id}`);
+  }, [navigate]);
+
+  const handleEdit = useCallback((article: Article) => {
+    handleOpenForm(article);
+  }, [handleOpenForm]);
+
+  const handleDelete = useCallback((id: string) => {
+    deleteArticle.mutate(id);
+  }, [deleteArticle]);
+
+  const handleApprove = useCallback((id: string) => {
+    approveArticle.mutate(id);
+  }, [approveArticle]);
+
+  // 4. Cấu hình cột cho Table (useMemo)
+  const columns: ColumnsType<Article> = useMemo(() => [
     {
       title: 'Tiêu đề',
       dataIndex: 'title',
@@ -87,9 +123,11 @@ const ArticlesPage: React.FC = () => {
     },
     {
       title: 'Danh mục',
-      dataIndex: 'categoryName',
-      key: 'category',
-      render: (text) => <AntTag color="blue">{text || 'Chưa phân loại'}</AntTag>,
+      dataIndex: 'categoryID',
+      key: 'categoryID',
+      render: (category) => (
+        <AntTag color="blue">{category?.categoryName || 'Chưa phân loại'}</AntTag>
+      ),
     },
     {
       title: 'Tác giả',
@@ -105,50 +143,32 @@ const ArticlesPage: React.FC = () => {
       key: 'status',
       width: 120,
       align: 'center',
-      render: (status) => {
-        const color =
-          status === 'Published' ? 'success' : status === 'Draft' ? 'warning' : 'default';
-        return <AntTag color={color}>{status}</AntTag>;
-      },
+      render: (status) => <ArticleStatusTag status={status} />,
     },
     {
       title: 'Ngày tạo',
       dataIndex: 'createdAt',
       key: 'createdAt',
       width: 150,
-      render: (date: Date) => (date ? new Date(date).toLocaleDateString('vi-VN') : '-'),
+      render: (date: string) => (date ? new Date(date).toLocaleDateString('vi-VN') : '-'),
     },
     {
       title: 'Hành động',
       key: 'action',
       align: 'center',
-      width: 120,
+      width: 180,
       render: (_, record) => (
-        <Space size="small">
-          <Tooltip title="Chỉnh sửa">
-            <Button
-              type="text"
-              icon={<EditOutlined className="text-blue-500" />}
-              onClick={() => handleOpenForm(record)}
-            />
-          </Tooltip>
-
-          <Tooltip title="Xóa">
-            <Popconfirm
-              title="Xóa bài viết?"
-              description="Hành động này không thể hoàn tác."
-              onConfirm={() => deleteArticle.mutate(record.id)}
-              okText="Xóa"
-              cancelText="Hủy"
-              okButtonProps={{ danger: true }}
-            >
-              <Button type="text" danger icon={<DeleteOutlined />} />
-            </Popconfirm>
-          </Tooltip>
-        </Space>
+        <ArticleActions
+          article={record}
+          onView={handleView}
+          onEdit={handleEdit}
+          onDelete={handleDelete}
+          onApprove={handleApprove}
+          showApprove={true}
+        />
       ),
     },
-  ];
+  ], [handleView, handleEdit, handleDelete, handleApprove]);
 
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
@@ -162,37 +182,17 @@ const ArticlesPage: React.FC = () => {
         className="shadow-sm"
       >
         {/* --- Toolbar: Search & Filter --- */}
-        <div className="flex flex-col md:flex-row justify-between gap-4 mb-6">
-          <Space>
-            <Input
-              placeholder="Tìm theo tiêu đề..."
-              prefix={<SearchOutlined className="text-gray-400" />}
-              onPressEnter={(e) =>
-                setFilters((prev) => ({ ...prev, search: e.currentTarget.value, page: 1 }))
-              }
-              style={{ width: 300 }}
-              allowClear
-            />
-            <Select
-              placeholder="Lọc danh mục"
-              style={{ width: 200 }}
-              allowClear
-              onChange={(val) => setFilters((prev) => ({ ...prev, categoryId: val, page: 1 }))}
-            >
-              {categories.map((cat) => (
-                <Select.Option key={cat.id} value={cat.id}>
-                  {cat.categoryName}
-                </Select.Option>
-              ))}
-            </Select>
-          </Space>
-        </div>
+        <ArticleTableToolbar
+          categories={categories}
+          onSearch={handleSearch}
+          onCategoryChange={handleCategoryChange}
+        />
 
         {/* --- Ant Design Table --- */}
         <Table
           columns={columns}
           dataSource={data?.articles || []}
-          rowKey={(record) => record.id} // Quan trọng: xác định key cho mỗi dòng
+          rowKey={(record) => record.id}
           loading={isLoading}
           pagination={{
             current: filters.page,
@@ -201,8 +201,8 @@ const ArticlesPage: React.FC = () => {
             showSizeChanger: true,
             showTotal: (total) => `Tổng ${total} bài viết`,
           }}
-          onChange={handleTableChange} // Xử lý phân trang server-side
-          scroll={{ x: 800 }} // Cho phép scroll ngang trên mobile
+          onChange={handleTableChange}
+          scroll={{ x: 800 }}
         />
       </Card>
 

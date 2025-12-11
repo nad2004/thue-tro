@@ -27,10 +27,6 @@ const seedData = async () => {
     console.log('💥 Dropping existing database...');
     await mongoose.connection.db.dropDatabase();
     console.log('✅ Database dropped. Starting fresh...');
-
-    // ---------------------------------------------------------
-    // 3. Tạo Users (Admin, Landlord, Tenant)
-    // ---------------------------------------------------------
     console.log('🌱 Seeding Users...');
     
     // Hash password thủ công (Vì đã xóa pre-save hook trong Model)

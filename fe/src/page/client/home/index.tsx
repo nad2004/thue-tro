@@ -21,7 +21,6 @@ const Home: React.FC = () => {
   // 1. STATE QUẢN LÝ BỘ LỌC
   const [searchText, setSearchText] = useState('');
   const [categoryId, setCategoryId] = useState<string | null>(null);
-  const [status, setStatus] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState('all');
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [priceRange, setPriceRange] = useState<{ min?: number; max?: number }>({});
@@ -34,6 +33,7 @@ const Home: React.FC = () => {
     const params: any = {
       page,
       limit,
+      status : "Published",
     };
 
     // Search
@@ -44,11 +44,6 @@ const Home: React.FC = () => {
     // Category
     if (categoryId) {
       params.categoryID = categoryId;
-    }
-
-    // Status
-    if (status) {
-      params.status = status;
     }
 
     // Tags (gửi dạng array query: ?tags=ID1&tags=ID2)
@@ -119,9 +114,6 @@ const Home: React.FC = () => {
       if (categoryId && article.categoryID?.id !== categoryId) {
         return false;
       }
-      if (status && article.status !== status) {
-        return false;
-      }
       // Filter by tags (nếu article có tags array)
       if (selectedTags.length > 0) {
         const articleTagIds = (article as any).tags?.map((t: any) => t.id || t._id) || [];
@@ -171,11 +163,6 @@ const Home: React.FC = () => {
     setPage(1);
   };
 
-  const handleStatusChange = (val: string) => {
-    setStatus(val);
-    setPage(1);
-  };
-
   const handleTagToggle = (tagId: string) => {
     setSelectedTags((prev) =>
       prev.includes(tagId) ? prev.filter((id) => id !== tagId) : [...prev, tagId],
@@ -201,7 +188,6 @@ const Home: React.FC = () => {
   const handleResetFilters = () => {
     setSearchText('');
     setCategoryId(null);
-    setStatus(null);
     setActiveTab('all');
     setSelectedTags([]);
     setPriceRange({});
@@ -225,7 +211,7 @@ const Home: React.FC = () => {
   const isLoadingData = isLoading || categoriesLoading || tagsLoading;
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-orange-50/30 to-white">
+    <div className="min-h-screen bg-linear-to-b from-orange-50/30 to-white">
       {/* --- HERO SECTION --- */}
       <HeroSection onSearch={handleSearch} />
 
@@ -324,7 +310,6 @@ const Home: React.FC = () => {
             categories={categories}
             onSearch={handleSearch}
             onCategoryChange={handleCategoryChange}
-            onStatusChange={handleStatusChange}
             onPriceRangeChange={handlePriceRangeChange}
             onAreaRangeChange={handleAreaRangeChange}
           />

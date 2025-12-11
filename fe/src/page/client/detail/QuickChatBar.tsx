@@ -11,15 +11,15 @@ export default function QuickChatBar({ author }: QuickChatBarProps) {
   const [messageApi, contextHolder] = message.useMessage();
 
   const handleCall = () => {
-     messageApi.open({
-       type: 'info',
-       content: `Liên hệ email: ${author.email}`,
-       icon: <Phone size={18} color="#ff7a00" />,
-     });
+    //  messageApi.open({
+    //    type: 'info',
+    //    content: `Liên hệ email: ${author.email}`,
+    //    icon: <Phone size={18} color="#ff7a00" />,
+    //  });
   };
 
   const handleChat = () => {
-    messageApi.success('Đang chuyển đến hộp thoại chat...');
+    // messageApi.success('Đang chuyển đến hộp thoại chat...');
   };
 
   return (

@@ -1,9 +1,5 @@
 import { z } from 'zod';
 
-// ==========================================
-// AUTHENTICATION
-// ==========================================
-
 export const loginSchema = z.object({
   email: z.string().email('Invalid email address'),
   password: z.string().min(6, 'Password must be at least 6 characters'),
@@ -13,17 +9,30 @@ export const loginSchema = z.object({
 export type LoginValues = z.infer<typeof loginSchema>;
 
 export const registerSchema = z.object({
-  fullName: z.string().min(2, 'Họ và Tên phải có ít nhất 2 ký tự.'),
-  userName: z.string().min(3, 'Tên đăng nhập phải có ít nhất 3 ký tự.'),
-  email: z.string().email('Email không hợp lệ.'),
-  // 👇 THÊM DÒNG NÀY
+  fullName: z
+    .string()
+    .min(3, 'Họ tên phải có ít nhất 3 ký tự')
+    .max(50, 'Họ tên không được quá 50 ký tự'),
+  
+  email: z
+    .string()
+    .email('Email không hợp lệ')
+    .min(1, 'Email là bắt buộc'),
+  
   phoneNumber: z
     .string()
-    .min(10, 'Số điện thoại phải có ít nhất 10 số.')
-    .max(11, 'Số điện thoại không quá 11 số.')
-    .regex(/^[0-9]+$/, 'Số điện thoại chỉ được chứa ký tự số.'),
-  // ----------------
-  password: z.string().min(6, 'Mật khẩu phải có ít nhất 6 ký tự.'),
+    .regex(/^(0|\+84)[0-9]{9,10}$/, 'Số điện thoại không hợp lệ')
+    .min(1, 'Số điện thoại là bắt buộc'),
+  
+  password: z
+    .string()
+    .min(6, 'Mật khẩu phải có ít nhất 6 ký tự')
+    .max(50, 'Mật khẩu không được quá 50 ký tự'),
+  
+  role: z
+    .enum(['Landlord', 'Tenant'], {
+      errorMap: () => ({ message: 'Vui lòng chọn vai trò' })
+    })
 });
 
 export type RegisterValues = z.infer<typeof registerSchema>;

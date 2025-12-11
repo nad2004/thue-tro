@@ -13,6 +13,7 @@ import cors from 'cors';
 import morgan from 'morgan';
 import swaggerUi from 'swagger-ui-express';
 import { swaggerSpec } from './config/swagger.js';
+import { errorHandler } from './middleware/error.middleware.js';
 dotenv.config();
 
 // Kết nối Database
@@ -40,13 +41,7 @@ app.use('/api/messages', messageRoute);
 app.get('/', (req, res) => {
   res.send('API Blog/News - Controller-Service-Mongoose');
 });
-
-app.use((req, res, next) => {
-    res.status(404).json({
-        success: false,
-        error: 'Endpoint không tìm thấy'
-    });
-});
+app.use(errorHandler);
 
 
 app.listen(PORT, () => {

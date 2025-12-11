@@ -6,6 +6,7 @@ export interface IUser {
   id: string;
   fullName: string;
   email: string;
+  phoneNumber: string;
   role: UserRole;
   avatar: string;
   createdAt: string;
@@ -20,20 +21,23 @@ export interface IUserBackend {
   role?: UserRole;
   avatar?: string;
   createdAt?: string;
+  phoneNumber?: string;
 }
 
 export class User implements IUser {
   id: string;
   fullName: string;
   email: string;
+  phoneNumber: string;
   role: UserRole;
   avatar: string;
   createdAt: string;
 
-  constructor({ _id, id, fullName, email, role, avatar, createdAt }: IUserBackend) {
+  constructor({ _id, id, fullName, email, role, avatar, createdAt, phoneNumber }: IUserBackend) {
     this.id = id || _id || '';
     this.fullName = fullName || '';
     this.email = email || '';
+    this.phoneNumber = phoneNumber || '';
     this.role = role || 'Tenant';
     this.avatar = avatar || '';
     this.createdAt = createdAt || '';

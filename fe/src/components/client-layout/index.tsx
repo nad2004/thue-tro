@@ -43,8 +43,8 @@ const ClientLayout = () => {
       icon: <User size={16} />,
     },
     {
-      key: 'my-posts',
-      label: <Link to="/my-posts">Tin đăng của tôi</Link>,
+      key: 'my-article',
+      label: <Link to="/my-article">Tin đăng của tôi</Link>,
       icon: <FileText size={16} />,
     },
     {
@@ -157,7 +157,7 @@ const ClientLayout = () => {
                 >
                   <div className="flex items-center gap-2 cursor-pointer hover:bg-gray-50 p-1.5 rounded-full transition-colors pl-2 pr-3 border border-transparent hover:border-gray-200">
                     <Avatar
-                      src={user.avatarUrl}
+                      src={user.avatar}
                       icon={<User size={16} />}
                       className="bg-orange-100 text-orange-600"
                       size="default"
@@ -187,7 +187,7 @@ const ClientLayout = () => {
                 />
                 {/* User Avatar Icon */}
                 <Avatar
-                  src={user.avatarUrl}
+                  src={user.avatar}
                   icon={<User size={16} />}
                   className="bg-orange-100 text-orange-600 cursor-pointer"
                   size="default"
@@ -264,7 +264,7 @@ const ClientLayout = () => {
           <div className="p-4 bg-orange-50 border-b border-orange-100">
             <div className="flex items-center gap-3">
               <Avatar
-                src={user.avatarUrl}
+                src={user.avatar}
                 icon={<User size={20} />}
                 className="bg-orange-100 text-orange-600"
                 size={48}
@@ -317,10 +317,10 @@ const ClientLayout = () => {
                   onClick: () => handleMobileMenuClick('/profile'),
                 },
                 {
-                  key: 'my-posts',
+                  key: 'my-article',
                   label: 'Tin đăng của tôi',
                   icon: <FileText size={16} />,
-                  onClick: () => handleMobileMenuClick('/my-posts'),
+                  onClick: () => handleMobileMenuClick('/my-article'),
                 },
                 {
                   key: 'saved',

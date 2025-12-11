@@ -19,9 +19,8 @@ export class UserService {
 
     // 3. Tạo user mới với mật khẩu đã mã hóa
     const newUser = new User({
-        userName: data.userName,
         email: data.email,
-        hashedPassword: hashedPassword, // <-- Đã sửa: Gán chuỗi mã hóa, không gán raw password
+        hashedPassword: hashedPassword, 
         fullName: data.fullName,
         phoneNumber: data.phoneNumber,
         role: data.role || 'Tenant', // Mặc định người thuê

@@ -1,8 +1,6 @@
-import React from 'react';
 import { Card, Avatar, Button, Typography, Tag, message, Tooltip } from 'antd';
 import { Phone, MessageCircle, User, CheckCircle2 } from 'lucide-react';
 import { IUser } from '@/types/User';
-
 const { Title, Text } = Typography;
 
 interface OwnerInfoProps {
@@ -11,7 +9,6 @@ interface OwnerInfoProps {
 
 export default function OwnerInfo({ author }: OwnerInfoProps) {
   const [messageApi, contextHolder] = message.useMessage();
-
   if (!author) return null;
 
   // Placeholder data
@@ -19,11 +16,11 @@ export default function OwnerInfo({ author }: OwnerInfoProps) {
   const displayEmail = author.email;
 
   const handleCall = () => {
-    messageApi.info(`Vui lòng liên hệ qua email: ${displayEmail}`);
+    // messageApi.info(`Vui lòng liên hệ qua email: ${displayEmail}`);
   };
 
   const handleChat = () => {
-    window.open(`mailto:${author.email}`, '_blank');
+    // window.open(`mailto:${author.email}`, '_blank');
   };
 
   return (
@@ -48,11 +45,7 @@ export default function OwnerInfo({ author }: OwnerInfoProps) {
         
         <Title level={4} style={{ marginBottom: 4 }}>{author.fullName}</Title>
         
-        <div className="flex items-center gap-2 mb-1">
-           <Text type="secondary" className="text-xs">
-              Tham gia: {new Date(author.createdAt).getFullYear()}
-           </Text>
-        </div>
+    
         
         {author.role === 'Landlord' && (
            <Tag color="success" icon={<CheckCircle2 size={12}/>} className="m-0 rounded-full px-2">

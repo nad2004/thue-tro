@@ -10,6 +10,7 @@ export class ArticleService {
         data.slug = slugify(data.title, { lower: true, strict: true });
     }
     
+    // data lúc này đã có link ảnh (thumbnail, images) do Controller xử lý
     const newArticle = new Article(data);
     await newArticle.save();
     return newArticle;
@@ -17,7 +18,6 @@ export class ArticleService {
 
   // --- LẤY DANH SÁCH (FILTER, SEARCH, PAGINATION) ---
   async getAll(query) {
-    // 1. Lấy tham số từ Query String & Set mặc định
     const { 
         search, 
         categoryID, 
@@ -26,75 +26,70 @@ export class ArticleService {
         minArea, maxArea, 
         page = 1, 
         limit = 10, 
-        sort = 'newest', // Các giá trị: newest, oldest, price-asc, price-desc
-        status = 'Published' 
+        sort = 'newest', // newest | oldest | price-asc | price-desc
+        status, // Mặc định chỉ lấy tin đã duyệt
     } = query;
+    const filter = {}; // Khởi tạo rỗng để lấy tất cả
 
-    // 2. Xây dựng bộ lọc (Filter Object)
-    const filter = { status }; // Mặc định chỉ lấy tin đã Published
-
-    // a. Tìm kiếm từ khóa (Search)
+    if (status) {
+        filter.status = status;
+    }
+    // Tìm kiếm (Title hoặc Summary/Address)
     if (search) {
-        const searchRegex = new RegExp(search, 'i'); // 'i' để không phân biệt hoa thường
+        const searchRegex = new RegExp(search, 'i');
         filter.$or = [
             { title: searchRegex },
             { summary: searchRegex }
         ];
     }
 
-    // b. Lọc theo Danh mục
-    if (categoryID) {
-        filter.categoryID = categoryID;
-    }
+    if (categoryID) filter.categoryID = categoryID;
 
-    // c. Lọc theo Tags (Tiện ích)
-    // URL dạng: ?tags=id1&tags=id2 (Mảng) hoặc ?tags=id1 (String)
+    // Lọc theo Tags (Tiện ích) - URL dạng ?tags=id1&tags=id2
     if (tags) {
         const tagList = Array.isArray(tags) ? tags : [tags];
         if (tagList.length > 0) {
-            // $all: Bài viết phải có ĐỦ các tags này
-            filter.tags = { $all: tagList };
+            filter.tags = { $all: tagList }; // Bài viết phải có đủ các tags này
         }
     }
 
-    // d. Lọc theo Giá (Chuyển sang Number để so sánh đúng)
+    // Lọc theo Giá
     if (minPrice || maxPrice) {
         filter.price = {};
         if (minPrice) filter.price.$gte = Number(minPrice);
         if (maxPrice) filter.price.$lte = Number(maxPrice);
     }
 
-    // e. Lọc theo Diện tích
+    // Lọc theo Diện tích
     if (minArea || maxArea) {
         filter.area = {};
         if (minArea) filter.area.$gte = Number(minArea);
         if (maxArea) filter.area.$lte = Number(maxArea);
     }
 
-    // 3. Xử lý Phân trang & Sắp xếp
+    // 2. Phân trang & Sắp xếp
     const pageNumber = Number(page) || 1;
     const limitNumber = Number(limit) || 10;
     const skip = (pageNumber - 1) * limitNumber;
 
-    let sortOption = { createdAt: -1 }; // Mặc định: Mới nhất trước
+    let sortOption = { createdAt: -1 }; // Mặc định mới nhất
     if (sort === 'oldest') sortOption = { createdAt: 1 };
-    if (sort === 'price-asc') sortOption = { price: 1 };     // Giá thấp -> cao
-    if (sort === 'price-desc') sortOption = { price: -1 };   // Giá cao -> thấp
+    if (sort === 'price-asc') sortOption = { price: 1 };
+    if (sort === 'price-desc') sortOption = { price: -1 };
 
-    // 4. Thực thi Query (Dùng Promise.all để chạy song song count và find)
+    // 3. Query Database
     const [articles, total] = await Promise.all([
         Article.find(filter)
-            .populate('authorID', 'fullName avatar phoneNumber') // Info người đăng
-            .populate('categoryID', 'categoryName')             // Info danh mục
-            .populate('tags', 'tagName tagType')                // Info tiện ích
-            .select('-content')                                 // Bỏ nội dung dài để API nhẹ hơn
+            .populate('authorID', 'fullName avatar phoneNumber email')
+            .populate('categoryID', 'categoryName')
+            .populate('tags', 'tagName tagType')
+            .select('-content') // Bỏ nội dung dài cho nhẹ
             .sort(sortOption)
             .skip(skip)
             .limit(limitNumber),
-        Article.countDocuments(filter) // Đếm tổng số bản ghi thỏa mãn filter
+        Article.countDocuments(filter)
     ]);
 
-    // 5. Trả về kết quả chuẩn format Pagination
     return {
         data: articles,
         meta: {
@@ -105,20 +100,70 @@ export class ArticleService {
         }
     };
   }
+  async getMyArticles(userID, query) {
+    const { 
+        search, 
+        page = 1, 
+        limit = 10, 
+        sort = 'newest', 
+        status 
+    } = query;
 
-  // --- LẤY CHI TIẾT 1 BÀI ---
+    // 1. BẮT BUỘC lọc theo tác giả là userID truyền vào
+    const filter = { authorID: userID };
+    if (status) {
+        filter.status = status;
+    }
+    if (search) {
+        const searchRegex = new RegExp(search, 'i');
+        filter.$or = [
+            { title: searchRegex },
+            { summary: searchRegex }
+        ];
+    }
+    const pageNumber = Number(page) || 1;
+    const limitNumber = Number(limit) || 10;
+    const skip = (pageNumber - 1) * limitNumber;
+
+    let sortOption = { createdAt: -1 };
+    if (sort === 'oldest') sortOption = { createdAt: 1 };
+    if (sort === 'price-asc') sortOption = { price: 1 };
+    if (sort === 'price-desc') sortOption = { price: -1 };
+
+    // 5. Query
+    const [articles, total] = await Promise.all([
+        Article.find(filter)
+            .populate('categoryID', 'categoryName')
+            .populate('tags', 'tagName tagType')
+            .select('-content') // Bỏ nội dung dài
+            .sort(sortOption)
+            .skip(skip)
+            .limit(limitNumber),
+        Article.countDocuments(filter)
+    ]);
+
+    return {
+        data: articles,
+        meta: {
+            page: pageNumber,
+            limit: limitNumber,
+            total,
+            totalPages: Math.ceil(total / limitNumber)
+        }
+    };
+  }
+  // --- LẤY CHI TIẾT ---
   async getById(id) {
     const article = await Article.findById(id)
       .populate('authorID', 'fullName phoneNumber avatar email')
       .populate('categoryID', 'categoryName parentCategory')
-      .populate('tags'); // Lấy full thông tin tags
+      .populate('tags');
 
     if (!article) throw new Error("Không tìm thấy tin đăng.");
-    
     return article;
   }
 
-  // --- CẬP NHẬT BÀI VIẾT ---
+  // --- CẬP NHẬT ---
   async update(id, data, userID, userRole) {
     const article = await Article.findById(id);
     if (!article) throw new Error("Tin không tồn tại");
@@ -128,23 +173,35 @@ export class ArticleService {
         throw new Error("Bạn không có quyền sửa tin này");
     }
 
-    // Nếu sửa title thì update lại slug
     if (data.title) {
         data.slug = slugify(data.title, { lower: true, strict: true });
     }
+
+    // Nếu muốn đổi trạng thái về Pending khi sửa tin đã duyệt, thêm logic ở đây
+    // if (article.status === 'Published' && userRole !== 'Admin') data.status = 'Pending';
 
     const updated = await Article.findByIdAndUpdate(id, data, { new: true });
     return updated;
   }
 
-  // --- XÓA BÀI VIẾT ---
+  // --- DUYỆT BÀI (ADMIN) ---
+  async approve(id) {
+    const article = await Article.findById(id);
+    if (!article) throw new Error("Tin đăng không tồn tại");
+
+    if (article.status === 'Published') {
+        throw new Error("Tin này đã được duyệt trước đó");
+    }
+
+    article.status = 'Published';
+    await article.save();
+    return article;
+  }
+
+  // --- XÓA BÀI ---
   async delete(id) {
     const result = await Article.findByIdAndDelete(id);
-
-    if (!result) {
-      throw new Error("Không tìm thấy bài viết để xóa.");
-    }
-    // Note: Có thể cần xóa thêm Comment liên quan nếu có logic đó
+    if (!result) throw new Error("Không tìm thấy bài viết để xóa.");
     return { message: "Đã xóa bài viết thành công", id: result._id };
   }
 }

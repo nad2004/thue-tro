@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Input, Select, Space, Button, Slider, Drawer } from 'antd';
+import { Input, Select, Button, Slider, Drawer } from 'antd';
 import { Search, SlidersHorizontal, X } from 'lucide-react';
 import { Category } from '@/types/Category';
 
@@ -7,7 +7,6 @@ interface FilterBarProps {
   categories: Category[];
   onSearch: (value: string) => void;
   onCategoryChange: (categoryId: string) => void;
-  onStatusChange: (status: string) => void;
   onPriceRangeChange?: (min?: number, max?: number) => void;
   onAreaRangeChange?: (min?: number, max?: number) => void;
 }
@@ -16,7 +15,6 @@ const FilterBar: React.FC<FilterBarProps> = ({
   categories,
   onSearch,
   onCategoryChange,
-  onStatusChange,
   onPriceRangeChange,
   onAreaRangeChange,
 }) => {
@@ -86,19 +84,6 @@ const FilterBar: React.FC<FilterBarProps> = ({
               {cat.categoryName}
             </Select.Option>
           ))}
-        </Select>
-
-        {/* Status Select */}
-        <Select
-          size="large"
-          placeholder="Trạng thái"
-          className="w-full md:w-40"
-          allowClear
-          onChange={onStatusChange}
-        >
-          <Select.Option value="Published">Đã xuất bản</Select.Option>
-          <Select.Option value="Draft">Bản nháp</Select.Option>
-          <Select.Option value="Pending">Chờ duyệt</Select.Option>
         </Select>
 
         {/* Advanced Filter Button */}

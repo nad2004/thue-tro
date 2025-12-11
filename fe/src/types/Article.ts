@@ -90,7 +90,7 @@ export class Article implements IArticle {
           email: data.authorID.email || '',
           fullName: data.authorID.fullName || '',
           avatar: data.authorID.avatar || data.authorID.avatar || '',
-          // phone: data.authorID.phone || "",
+          phoneNumber: data.authorID.phoneNumber || '',
           role: data.authorID.role || 'Tenant',
           createdAt: data.authorID.createdAt || '',
         }

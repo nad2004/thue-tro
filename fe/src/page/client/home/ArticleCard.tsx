@@ -49,7 +49,7 @@ const ArticleCard = ({ article }: ArticleCardProps) => {
       {/* --- IMAGE SECTION --- */}
       <Link
         to={`/detail/${article.id}`}
-        className="relative block aspect-[4/3] overflow-hidden bg-gray-100"
+        className="relative block aspect-4/3 overflow-hidden bg-gray-100"
       >
         {/* Image with Loading State */}
         <img
@@ -62,13 +62,13 @@ const ArticleCard = ({ article }: ArticleCardProps) => {
         />
 
         {/* Gradient Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/0 to-black/20" />
+        <div className="absolute inset-0 bg-linear-to-t from-black/60 via-black/0 to-black/20" />
 
         {/* Badges Container */}
         <div className="absolute top-3 left-3 flex flex-col gap-1.5 z-10">
           {/* VIP/Featured Badge */}
           {(article as any).isFeatured && (
-            <span className="flex items-center gap-1 bg-gradient-to-r from-red-500 to-pink-500 text-white text-[10px] font-bold px-2.5 py-1 rounded-lg shadow-lg uppercase tracking-wide">
+            <span className="flex items-center gap-1 bg-linear-to-r from-red-500 to-pink-500 text-white text-[10px] font-bold px-2.5 py-1 rounded-lg shadow-lg uppercase tracking-wide">
               <BadgeCheck size={12} />
               Nổi Bật
             </span>
@@ -175,7 +175,7 @@ const ArticleCard = ({ article }: ArticleCardProps) => {
               size={28}
               src={article.authorID?.avatar}
               icon={<User size={14} />}
-              className="bg-gradient-to-br from-orange-400 to-pink-400 border-2 border-white shadow"
+              className="bg-linear-to-br from-orange-400 to-pink-400 border-2 border-white shadow"
             />
             <div className="flex flex-col leading-tight">
               <span className="text-xs font-semibold text-gray-700 truncate max-w-[100px]">

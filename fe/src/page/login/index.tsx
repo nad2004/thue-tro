@@ -1,26 +1,23 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useNavigate, Link } from 'react-router-dom';
-import { Button, Input, Card, Typography, Alert, Form } from 'antd';
-import { UserOutlined, LockOutlined } from '@ant-design/icons';
-
-// Import Hooks & Types
+import { Button, Input, Card, Typography, Alert, Checkbox } from 'antd';
+import { LockOutlined, MailOutlined, LoginOutlined } from '@ant-design/icons';
+import { Home } from 'lucide-react';
+// Hooks & Types
 import { useAuthActions } from '@/hooks/useAuth';
-// Lưu ý: Import cả Schema và Type từ file validation bạn đã tạo
 import { loginSchema, LoginValues } from '@/lib/utils/validation';
 
-const { Title } = Typography;
+const { Title, Text } = Typography;
 
 export default function LoginPage() {
   const navigate = useNavigate();
-  const { login } = useAuthActions();
+  const { login, isLoggingIn } = useAuthActions();
 
-  // 1. Định nghĩa kiểu state rõ ràng
   const [serverError, setServerError] = useState<string>('');
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [rememberMe, setRememberMe] = useState<boolean>(false);
 
-  // 2. Định kiểu cho useForm với LoginValues
   const {
     control,
     handleSubmit,
@@ -33,34 +30,38 @@ export default function LoginPage() {
     },
   });
 
-  // 3. Hàm onSubmit nhận data đã được Type-check chính xác
   const onSubmit = async (data: LoginValues) => {
-    setIsLoading(true);
     setServerError('');
     try {
       await login(data);
-      // Login success -> redirect dashboard
-      navigate('/dashboard');
+
+      // Save email if remember me is checked
+      if (rememberMe) {
+        localStorage.setItem('rememberedEmail', data.email);
+      } else {
+        localStorage.removeItem('rememberedEmail');
+      }
+
+      navigate('/');
     } catch (err: any) {
-      // Xử lý lỗi từ API (err có thể là Error object hoặc string tùy config axios)
       setServerError(err.message || 'Đăng nhập thất bại. Vui lòng thử lại.');
-    } finally {
-      setIsLoading(false);
     }
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-100 p-4">
-      <Card
-        style={{ width: 400 }}
-        // Thay variant="borderless" thành bordered={false} nếu dùng bản Antd cũ,
-        // hoặc giữ nguyên nếu dùng Antd v5 mới nhất hỗ trợ variant.
-        bordered={false}
-        className="shadow-lg"
-      >
-        <div className="text-center mb-6">
-          <Title level={2}>Đăng Nhập</Title>
-          <p className="text-gray-500">Hệ thống quản trị nhà trọ</p>
+    <div className="flex min-h-screen items-center justify-center bg-linear-to-br from-orange-50 to-pink-50 p-4">
+      <Card style={{ width: 450 }} bordered={false} className="shadow-2xl rounded-2xl">
+        {/* Header */}
+        <div className="text-center mb-8">
+          <div className="w-16 h-16 bg-linear-to-br from-orange-500 to-pink-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <div className="w-9 h-9 bg-orange-500 rounded-lg flex items-center justify-center shadow-sm">
+              <Home size={20} className="text-white" />
+            </div>
+          </div>
+          <Title level={2} className="mb-2!">
+            Đăng Nhập
+          </Title>
+          <Text type="secondary">Chào mừng bạn quay trở lại!</Text>
         </div>
 
         {serverError && (
@@ -68,58 +69,112 @@ export default function LoginPage() {
             message={serverError}
             type="error"
             showIcon
-            className="mb-4"
+            className="mb-4 rounded-lg"
             closable
             onClose={() => setServerError('')}
           />
         )}
 
-        <Form layout="vertical" onFinish={handleSubmit(onSubmit)}>
-          <div className="mb-4">
-            <label className="block mb-1 font-medium">Email</label>
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          {/* Email */}
+          <div>
+            <label className="block mb-2 font-medium text-gray-700">
+              Email <span className="text-red-500">*</span>
+            </label>
             <Controller
               name="email"
               control={control}
               render={({ field }) => (
                 <Input
                   {...field}
-                  prefix={<UserOutlined />}
-                  placeholder="admin@example.com"
+                  prefix={<MailOutlined className="text-gray-400" />}
                   size="large"
                   status={errors.email ? 'error' : ''}
+                  placeholder="email@example.com"
+                  className="rounded-lg"
                 />
               )}
             />
-            {errors.email && <span className="text-red-500 text-sm">{errors.email.message}</span>}
+            {errors.email && (
+              <span className="text-red-500 text-sm mt-1 block">{errors.email.message}</span>
+            )}
           </div>
 
-          <div className="mb-6">
-            <label className="block mb-1 font-medium">Mật khẩu</label>
+          {/* Mật khẩu */}
+          <div>
+            <label className="block mb-2 font-medium text-gray-700">
+              Mật khẩu <span className="text-red-500">*</span>
+            </label>
             <Controller
               name="password"
               control={control}
               render={({ field }) => (
                 <Input.Password
                   {...field}
-                  prefix={<LockOutlined />}
-                  placeholder="••••••"
+                  prefix={<LockOutlined className="text-gray-400" />}
                   size="large"
                   status={errors.password ? 'error' : ''}
+                  placeholder="••••••••"
+                  className="rounded-lg"
                 />
               )}
             />
             {errors.password && (
-              <span className="text-red-500 text-sm">{errors.password.message}</span>
+              <span className="text-red-500 text-sm mt-1 block">{errors.password.message}</span>
             )}
           </div>
 
-          <Button type="primary" htmlType="submit" block size="large" loading={isLoading}>
+          {/* Remember Me & Forgot Password */}
+          <div className="flex items-center justify-between">
+            <Checkbox checked={rememberMe} onChange={(e) => setRememberMe(e.target.checked)}>
+              <Text type="secondary">Ghi nhớ đăng nhập</Text>
+            </Checkbox>
+            <Link
+              to="/forgot-password"
+              className="text-orange-500 hover:text-orange-600 text-sm font-medium"
+            >
+              Quên mật khẩu?
+            </Link>
+          </div>
+
+          <Button
+            type="primary"
+            htmlType="submit"
+            block
+            size="large"
+            loading={isLoggingIn}
+            icon={<LoginOutlined />}
+            className="bg-linear-to-r! from-orange-500! to-pink-500! hover:from-orange-600! hover:to-pink-600! border-none! h-12! rounded-lg! font-semibold! mt-6!"
+          >
             Đăng Nhập
           </Button>
-        </Form>
+        </form>
 
-        <div className="mt-4 text-center">
-          Chưa có tài khoản? <Link to="/register">Đăng ký ngay</Link>
+        <div className="mt-6 text-center">
+          <Text type="secondary">Chưa có tài khoản? </Text>
+          <Link to="/register" className="text-orange-500 hover:text-orange-600 font-semibold">
+            Đăng ký ngay
+          </Link>
+        </div>
+
+        {/* Divider với "hoặc" */}
+        <div className="relative my-6">
+          <div className="absolute inset-0 flex items-center">
+            <div className="w-full border-t border-gray-200"></div>
+          </div>
+          <div className="relative flex justify-center text-sm">
+            <span className="px-4 bg-white text-gray-500">Hoặc đăng nhập với</span>
+          </div>
+        </div>
+
+        {/* Social Login Buttons (Optional) */}
+        <div className="grid grid-cols-2 gap-3">
+          <Button size="large" className="rounded-lg border-gray-300" disabled>
+            <span className="mr-2">🔵</span> Facebook
+          </Button>
+          <Button size="large" className="rounded-lg border-gray-300" disabled>
+            <span className="mr-2">🔴</span> Google
+          </Button>
         </div>
       </Card>
     </div>

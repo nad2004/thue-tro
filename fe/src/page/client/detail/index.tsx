@@ -11,14 +11,15 @@ import {
 } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { vi } from 'date-fns/locale';
-
+import { useState } from 'react';
 import { useArticle } from '@/hooks/useArticles';
 import OwnerInfo from './OwnerInfo';
 import QuickChatBar from './QuickChatBar';
 
-const { Title, Text, Paragraph } = Typography;
+const { Title, Text } = Typography;
 
 export default function DetailPage() {
+  const [isExpanded, setIsExpanded] = useState(false);
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { data: article, isLoading } = useArticle(id || '');
@@ -166,12 +167,30 @@ export default function DetailPage() {
             {/* 3. Description */}
             <Card bordered={false} className="shadow-sm rounded-xl mb-6">
               <Title level={4}>Thông tin mô tả</Title>
-              <Paragraph 
-                ellipsis={{ rows: 5, expandable: true, symbol: 'Xem thêm' }}
-                className="text-gray-700 text-base whitespace-pre-line leading-relaxed"
-              >
-                {article.content}
-              </Paragraph>
+              
+              <div className={`relative ${!isExpanded ? 'max-h-[150px] overflow-hidden' : ''}`}>
+                <div 
+                  className="text-gray-700 text-base leading-relaxed article-content"
+                  // Render HTML tại đây
+                  dangerouslySetInnerHTML={{ __html: article.content }} 
+                />
+                
+                {/* Hiệu ứng mờ dần khi chưa mở rộng */}
+                {!isExpanded && (
+                  <div className="absolute bottom-0 left-0 w-full h-12 bg-linear-to-t from-white to-transparent" />
+                )}
+              </div>
+
+              {/* Nút bấm Xem thêm / Thu gọn */}
+              <div className="mt-2 text-center md:text-left">
+                <Button 
+                  type="link" 
+                  className="p-0 font-medium"
+                  onClick={() => setIsExpanded(!isExpanded)}
+                >
+                  {isExpanded ? 'Thu gọn' : 'Xem thêm'}
+                </Button>
+              </div>
             </Card>
 
             {/* 4. Amenities */}
