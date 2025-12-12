@@ -9,8 +9,8 @@ import { useAuthStore } from '@/store/auth-store';
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      refetchOnWindowFocus: false, // Tắt tự động fetch lại khi focus tab (tuỳ chọn)
-      retry: 1, // Số lần thử lại khi lỗi
+      refetchOnWindowFocus: false,
+      retry: 1,
     },
   },
 });

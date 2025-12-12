@@ -31,7 +31,7 @@ const options = {
     ],
   },
   // Đường dẫn tới các file chứa comment swagger
-  apis: ['./src/routes/*.js', './src/docs/*.yaml'], 
+  apis: ['./src/routes/*.js', './src/docs/*.yaml'],
 };
 
 export const swaggerSpec = swaggerJsdoc(options);

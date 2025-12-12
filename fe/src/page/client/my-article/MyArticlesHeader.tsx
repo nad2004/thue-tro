@@ -9,10 +9,7 @@ interface MyArticlesHeaderProps {
   onCreate: () => void;
 }
 
-const MyArticlesHeader: React.FC<MyArticlesHeaderProps> = React.memo(({ 
-  totalCount, 
-  onCreate 
-}) => {
+const MyArticlesHeader: React.FC<MyArticlesHeaderProps> = React.memo(({ totalCount, onCreate }) => {
   return (
     <div className="bg-linear-to-r from-orange-500 to-pink-500 rounded-2xl p-6 md:p-8 mb-6 text-white shadow-xl">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
@@ -34,11 +31,11 @@ const MyArticlesHeader: React.FC<MyArticlesHeaderProps> = React.memo(({
             </div>
           </div>
         </div>
-        
-        <Button 
+
+        <Button
           type="primary"
-          size="large" 
-          icon={<Plus size={20} />} 
+          size="large"
+          icon={<Plus size={20} />}
           onClick={onCreate}
           className="bg-white! text-orange-600! hover:bg-orange-50! border-none! h-12! px-6! font-semibold! rounded-xl! shadow-lg hover:shadow-xl transition-all whitespace-nowrap"
         >

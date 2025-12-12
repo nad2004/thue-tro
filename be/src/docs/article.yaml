@@ -40,27 +40,27 @@ components:
         categoryID:
           type: object
           properties:
-            _id: 
+            _id:
               type: string
-            categoryName: 
+            categoryName:
               type: string
         authorID:
           type: object
           properties:
-            fullName: 
+            fullName:
               type: string
-            avatar: 
+            avatar:
               type: string
-            phoneNumber: 
+            phoneNumber:
               type: string
         tags:
           type: array
           items:
             type: object
             properties:
-              _id: 
+              _id:
                 type: string
-              tagName: 
+              tagName:
                 type: string
         status:
           type: string
@@ -143,7 +143,7 @@ paths:
               type: string
           style: form
           explode: true
-          description: "Mảng ID các tiện ích. VD: ?tags=ID1&tags=ID2"
+          description: 'Mảng ID các tiện ích. VD: ?tags=ID1&tags=ID2'
       responses:
         200:
           description: Thành công
@@ -165,13 +165,13 @@ paths:
                       meta:
                         type: object
                         properties:
-                          page: 
+                          page:
                             type: integer
-                          limit: 
+                          limit:
                             type: integer
-                          total: 
+                          total:
                             type: integer
-                          totalPages: 
+                          totalPages:
                             type: integer
 
     post:

@@ -41,7 +41,7 @@ const UsersPage: React.FC = () => {
       limit: pagination.pageSize,
     }));
   };
-  console.log(users)
+  console.log(users);
   // 3. Cấu hình Cột
   const columns: ColumnsType<User> = [
     {

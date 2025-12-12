@@ -48,7 +48,7 @@ const PostArticleForm: React.FC<PostArticleFormProps> = ({
   isSubmitting,
 }) => {
   const [form] = Form.useForm();
-  
+
   // State quản lý file upload
   const [thumbnailList, setThumbnailList] = useState<UploadFile[]>([]);
   const [imageList, setImageList] = useState<UploadFile[]>([]);
@@ -140,14 +140,17 @@ const PostArticleForm: React.FC<PostArticleFormProps> = ({
             </Text>
           </div>
         </div>
-        
+
         <div className="flex flex-wrap gap-4 mt-6">
           {[
             { icon: HomeIcon, text: 'Miễn phí đăng tin' },
             { icon: Sparkles, text: 'Tiếp cận nhiều khách hàng' },
             { icon: CheckSquare, text: 'Duyệt tin nhanh chóng' },
           ].map((item, idx) => (
-            <div key={idx} className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full">
+            <div
+              key={idx}
+              className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full"
+            >
               <item.icon size={16} />
               <span className="text-sm font-medium">{item.text}</span>
             </div>
@@ -166,9 +169,8 @@ const PostArticleForm: React.FC<PostArticleFormProps> = ({
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* === CỘT TRÁI (Thông tin chính) === */}
           <div className="lg:col-span-2 space-y-6">
-            
             {/* 1. THÔNG TIN CƠ BẢN */}
-            <Card 
+            <Card
               className="shadow-sm hover:shadow-md transition-shadow border border-gray-100 rounded-xl"
               title={
                 <div className="flex items-center gap-2 text-gray-800">
@@ -184,11 +186,11 @@ const PostArticleForm: React.FC<PostArticleFormProps> = ({
                 label={<span className="font-semibold text-gray-700">Tiêu đề tin đăng</span>}
                 rules={[
                   { required: true, message: 'Vui lòng nhập tiêu đề' },
-                  { min: 20, message: 'Tiêu đề phải có ít nhất 20 ký tự' }
+                  { min: 20, message: 'Tiêu đề phải có ít nhất 20 ký tự' },
                 ]}
               >
-                <Input 
-                  size="large" 
+                <Input
+                  size="large"
                   placeholder="VD: Phòng trọ cao cấp gần ĐH Bách Khoa, có gác, WC riêng..."
                   className="rounded-lg"
                 />
@@ -199,12 +201,12 @@ const PostArticleForm: React.FC<PostArticleFormProps> = ({
                 required
               >
                 <div className="border border-gray-200 rounded-lg overflow-hidden">
-                  <ReactQuill 
-                    theme="snow" 
+                  <ReactQuill
+                    theme="snow"
                     value={content}
                     onChange={setContent}
                     modules={modules}
-                    style={{ height: 250 }} 
+                    style={{ height: 250 }}
                     className="mb-12"
                     placeholder="Mô tả chi tiết về phòng trọ: Nội thất, tiện ích, quy định, giao thông..."
                   />
@@ -213,7 +215,7 @@ const PostArticleForm: React.FC<PostArticleFormProps> = ({
             </Card>
 
             {/* 2. HÌNH ẢNH */}
-            <Card 
+            <Card
               className="shadow-sm hover:shadow-md transition-shadow border border-gray-100 rounded-xl"
               title={
                 <div className="flex items-center gap-2 text-gray-800">
@@ -269,9 +271,8 @@ const PostArticleForm: React.FC<PostArticleFormProps> = ({
 
           {/* === CỘT PHẢI (Thông số & Phân loại) === */}
           <div className="space-y-6">
-            
             {/* 3. CHI TIẾT & GIÁ */}
-            <Card 
+            <Card
               className="shadow-sm hover:shadow-md transition-shadow border border-gray-100 rounded-xl"
               title={
                 <div className="flex items-center gap-2 text-gray-800">
@@ -317,7 +318,7 @@ const PostArticleForm: React.FC<PostArticleFormProps> = ({
             </Card>
 
             {/* 4. ĐỊA CHỈ & DANH MỤC */}
-            <Card 
+            <Card
               className="shadow-sm hover:shadow-md transition-shadow border border-gray-100 rounded-xl"
               title={
                 <div className="flex items-center gap-2 text-gray-800">
@@ -333,10 +334,10 @@ const PostArticleForm: React.FC<PostArticleFormProps> = ({
                 label={<span className="font-semibold text-gray-700">Khu vực</span>}
                 rules={[{ required: true, message: 'Chọn khu vực' }]}
               >
-                <Select 
-                  size="large" 
-                  placeholder="Chọn quận/huyện" 
-                  showSearch 
+                <Select
+                  size="large"
+                  placeholder="Chọn quận/huyện"
+                  showSearch
                   optionFilterProp="children"
                   className="rounded-lg"
                 >
@@ -353,11 +354,11 @@ const PostArticleForm: React.FC<PostArticleFormProps> = ({
                 label={<span className="font-semibold text-gray-700">Địa chỉ cụ thể</span>}
                 rules={[
                   { required: true, message: 'Nhập địa chỉ nhà' },
-                  { min: 10, message: 'Địa chỉ quá ngắn' }
+                  { min: 10, message: 'Địa chỉ quá ngắn' },
                 ]}
               >
-                <Input.TextArea 
-                  rows={3} 
+                <Input.TextArea
+                  rows={3}
                   placeholder="Số 10, Ngõ 5, Đường Xuân Thủy, Cầu Giấy, Hà Nội"
                   className="rounded-lg"
                 />
@@ -365,7 +366,7 @@ const PostArticleForm: React.FC<PostArticleFormProps> = ({
             </Card>
 
             {/* 5. TIỆN ÍCH */}
-            <Card 
+            <Card
               className="shadow-sm hover:shadow-md transition-shadow border border-gray-100 rounded-xl"
               title={
                 <div className="flex items-center gap-2 text-gray-800">
@@ -379,8 +380,8 @@ const PostArticleForm: React.FC<PostArticleFormProps> = ({
               <Form.Item name="tags">
                 <Checkbox.Group className="flex flex-col gap-3">
                   {tags.map((tag) => (
-                    <Checkbox 
-                      key={tag.id} 
+                    <Checkbox
+                      key={tag.id}
                       value={tag.id}
                       className="hover:text-orange-600 transition-colors"
                     >

@@ -10,7 +10,6 @@ import Category from '../models/Category.model.js';
 import Tag from '../models/Tag.model.js';
 import Article from '../models/Article.model.js';
 
-
 // --- Config Env ---
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -22,13 +21,13 @@ const seedData = async () => {
     console.log('🔌 Connecting to MongoDB...');
     const MONGO_URI = process.env.MONGODB_URI;
     await mongoose.connect(MONGO_URI);
-    
+
     // 2. Clear Database
     console.log('💥 Dropping existing database...');
     await mongoose.connection.db.dropDatabase();
     console.log('✅ Database dropped. Starting fresh...');
     console.log('🌱 Seeding Users...');
-    
+
     // Hash password thủ công (Vì đã xóa pre-save hook trong Model)
     const salt = await bcrypt.genSalt(10);
     const commonPassword = await bcrypt.hash('123456', salt);
@@ -41,7 +40,7 @@ const seedData = async () => {
       hashedPassword: commonPassword, // KEY QUAN TRỌNG
       role: 'Admin', // Enum khớp model
       phoneNumber: '0900000000',
-      avatar: 'https://i.pravatar.cc/150?u=admin' // Sửa key avatarUrl -> avatar cho khớp model mới
+      avatar: 'https://i.pravatar.cc/150?u=admin', // Sửa key avatarUrl -> avatar cho khớp model mới
     });
 
     // Chủ nhà (Landlord)
@@ -52,7 +51,7 @@ const seedData = async () => {
       hashedPassword: commonPassword,
       role: 'Landlord', // Enum khớp model (Thay vì Editor)
       phoneNumber: '0912345678',
-      avatar: 'https://i.pravatar.cc/150?u=host'
+      avatar: 'https://i.pravatar.cc/150?u=host',
     });
 
     // Người thuê (Tenant)
@@ -63,7 +62,7 @@ const seedData = async () => {
       hashedPassword: commonPassword,
       role: 'Tenant', // Enum khớp model (Thay vì Subscriber)
       phoneNumber: '0987654321',
-      avatar: 'https://i.pravatar.cc/150?u=renter'
+      avatar: 'https://i.pravatar.cc/150?u=renter',
     });
 
     // ---------------------------------------------------------
@@ -80,10 +79,10 @@ const seedData = async () => {
       { name: 'Quận Hoàng Mai', slug: 'quan-hoang-mai' },
       { name: 'Quận Tây Hồ', slug: 'quan-tay-ho' },
       { name: 'Quận Nam Từ Liêm', slug: 'quan-nam-tu-liem' },
-      { name: 'Quận Bắc Từ Liêm', slug: 'quan-bac-tu-liem' }
+      { name: 'Quận Bắc Từ Liêm', slug: 'quan-bac-tu-liem' },
     ];
     const categories = await Category.insertMany(
-        districtData.map(d => ({ categoryName: d.name, categorySlug: d.slug }))
+      districtData.map((d) => ({ categoryName: d.name, categorySlug: d.slug })),
     );
 
     // ---------------------------------------------------------
@@ -91,15 +90,25 @@ const seedData = async () => {
     // ---------------------------------------------------------
     console.log('🌱 Seeding Tags (Amenities)...');
     const tagData = [
-      'Điều hòa', 'Nóng lạnh', 'Máy giặt chung', 'Thang máy', 
-      'Ban công', 'Không chung chủ', 'Chung cư mini', 'Gác xép', 
-      'Giường tủ', 'An ninh tốt'
+      'Điều hòa',
+      'Nóng lạnh',
+      'Máy giặt chung',
+      'Thang máy',
+      'Ban công',
+      'Không chung chủ',
+      'Chung cư mini',
+      'Gác xép',
+      'Giường tủ',
+      'An ninh tốt',
     ];
     const tags = await Tag.insertMany(
-        tagData.map(name => ({
-            tagName: name,
-            tagSlug: name.toLowerCase().replace(/ /g, '-').replace(/[àáạảãâầấậẩẫăằắặẳẵ]/g, "a")
-        }))
+      tagData.map((name) => ({
+        tagName: name,
+        tagSlug: name
+          .toLowerCase()
+          .replace(/ /g, '-')
+          .replace(/[àáạảãâầấậẩẫăằắặẳẵ]/g, 'a'),
+      })),
     );
 
     // ---------------------------------------------------------
@@ -118,7 +127,7 @@ const seedData = async () => {
       categoryID: categories[0]._id, // Cầu Giấy
       authorID: landlordUser._id, // Chị Lan
       tags: [tags[0]._id, tags[1]._id], // Điều hòa, Nóng lạnh
-      status: 'Published'
+      status: 'Published',
     });
 
     // Tin 2: CCMN Thanh Xuân (Do Landlord đăng)
@@ -132,7 +141,7 @@ const seedData = async () => {
       categoryID: categories[2]._id, // Thanh Xuân
       authorID: landlordUser._id,
       tags: [tags[3]._id, tags[6]._id], // Thang máy, CCMN
-      status: 'Published'
+      status: 'Published',
     });
 
     // Tin 3: Giá rẻ Bắc Từ Liêm (Đã thuê - Draft)
@@ -144,16 +153,13 @@ const seedData = async () => {
       area: 15,
       thumbnail: 'https://placehold.co/600x400/png?text=Gia+Re',
       categoryID: categories[9]._id, // Bắc Từ Liêm
-      authorID: adminUser._id, 
+      authorID: adminUser._id,
       tags: [],
-      status: 'Draft'
+      status: 'Draft',
     });
-
-   
 
     console.log('🎉 Database Seeded Successfully!');
     process.exit(0);
-
   } catch (error) {
     console.error('❌ Seeding Failed:', error);
     process.exit(1);

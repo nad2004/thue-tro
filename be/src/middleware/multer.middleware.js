@@ -15,5 +15,5 @@ export const upload = multer({
     } else {
       cb(new Error('Chỉ chấp nhận file ảnh'), false);
     }
-  }
+  },
 });

@@ -1,23 +1,75 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Input, Button, Select } from 'antd';
 import { Search, MapPin, Home, Sparkles } from 'lucide-react';
+import { useQueryStore } from '@/store/querry-store';
+import { useNavigate } from 'react-router-dom';
 
-interface HeroSectionProps {
-  onSearch: (value: string) => void;
-}
-
-const HeroSection: React.FC<HeroSectionProps> = ({ onSearch }) => {
-  const [searchValue, setSearchValue] = useState('');
-  const [priceRange, setPriceRange] = useState<string>('');
-  const [area, setArea] = useState<string>('');
-
+const HeroSection: React.FC = () => {
+  const navigate = useNavigate();
+  const searchText = useQueryStore((s) => s.searchText);
+  const priceRange = useQueryStore((s) => s.priceRange);
+  const areaRange = useQueryStore((s) => s.areaRange);
+  const setSearchText = useQueryStore((s) => s.setSearchText);
+  const setPriceRange = useQueryStore((s) => s.setPriceRange);
+  const setAreaRange = useQueryStore((s) => s.setAreaRange);
   const handleSearch = () => {
-    onSearch(searchValue);
+    navigate('/articles');
+  };
+  const handleQuickSearch = (keyword: string) => {
+    setSearchText(keyword);
+    navigate('/articles');
+  };
+  const handlePriceChange = (value: string) => {
+    if (!value) {
+      setPriceRange({ min: undefined, max: undefined });
+      return;
+    }
+
+    const [min, max] = value.split('-');
+    if (max === '+') {
+      setPriceRange({ min: Number(min) * 1000000, max: undefined });
+    } else {
+      setPriceRange({
+        min: Number(min) * 1000000,
+        max: Number(max) * 1000000,
+      });
+    }
+  };
+  const handleAreaChange = (value: string) => {
+    if (!value) {
+      setAreaRange({ min: undefined, max: undefined });
+      return;
+    }
+
+    const [min, max] = value.split('-');
+    if (max === '+') {
+      setAreaRange({ min: Number(min), max: undefined });
+    } else {
+      setAreaRange({
+        min: Number(min),
+        max: Number(max),
+      });
+    }
+  };
+  const getCurrentPriceValue = (): string => {
+    if (!priceRange.min && !priceRange.max) return '';
+
+    const min = (priceRange.min || 0) / 1000000;
+    const max = priceRange.max ? priceRange.max / 1000000 : '+';
+
+    return `${min}-${max}`;
+  };
+  const getCurrentAreaValue = (): string => {
+    if (!areaRange.min && !areaRange.max) return '';
+
+    const min = areaRange.min || 0;
+    const max = areaRange.max || '+';
+
+    return `${min}-${max}`;
   };
 
   return (
-    <div className="relative bg-gradient-to-br from-orange-500 via-orange-400 to-amber-500 overflow-hidden">
-      {/* Background Pattern */}
+    <div className="relative bg-linear-to-br from-orange-500 via-orange-400 to-amber-500 overflow-hidden mt-3">
       <div className="absolute inset-0 opacity-10">
         <div className="absolute top-0 left-0 w-96 h-96 bg-white rounded-full blur-3xl"></div>
         <div className="absolute bottom-0 right-0 w-96 h-96 bg-white rounded-full blur-3xl"></div>
@@ -25,13 +77,10 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onSearch }) => {
 
       <div className="relative max-w-7xl mx-auto px-4 md:px-6 py-12 md:py-20">
         <div className="text-center mb-8">
-          {/* Badge */}
           <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm text-white px-4 py-2 rounded-full mb-4 text-sm font-medium">
             <Sparkles size={16} />
             <span>Nền tảng cho thuê phòng trọ hàng đầu Việt Nam</span>
           </div>
-
-          {/* Main Heading */}
           <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold text-white mb-4 leading-tight">
             Tìm phòng trọ <br className="hidden md:block" />
             <span className="text-amber-100">hoàn hảo cho bạn</span>
@@ -41,30 +90,25 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onSearch }) => {
             Hàng nghìn tin đăng mới mỗi ngày, giá tốt, thông tin chính xác, hỗ trợ 24/7
           </p>
         </div>
-
-        {/* Search Box */}
-        {/* <div className="max-w-4xl mx-auto">
+        <div className="max-w-4xl mx-auto">
           <div className="bg-white rounded-2xl shadow-2xl p-3 md:p-4">
             <div className="flex flex-col md:flex-row gap-3">
-             
               <div className="flex-1 relative">
                 <Input
                   size="large"
                   placeholder="Tìm kiếm theo địa điểm, quận, phường..."
                   prefix={<Search size={20} className="text-gray-400" />}
-                  value={searchValue}
-                  onChange={(e) => setSearchValue(e.target.value)}
+                  value={searchText}
+                  onChange={(e) => setSearchText(e.target.value)}
                   onPressEnter={handleSearch}
                   className="rounded-xl border-gray-200 hover:border-orange-400 focus:border-orange-500"
                 />
               </div>
-
-             
               <Select
                 size="large"
                 placeholder="Mức giá"
-                value={priceRange}
-                onChange={setPriceRange}
+                value={getCurrentPriceValue()}
+                onChange={handlePriceChange}
                 className="w-full md:w-48 rounded-xl"
                 options={[
                   { value: '', label: 'Tất cả mức giá' },
@@ -72,27 +116,24 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onSearch }) => {
                   { value: '2-4', label: '2 - 4 triệu' },
                   { value: '4-6', label: '4 - 6 triệu' },
                   { value: '6-10', label: '6 - 10 triệu' },
-                  { value: '10+', label: 'Trên 10 triệu' },
+                  { value: '10-+', label: 'Trên 10 triệu' },
                 ]}
               />
-
-            
               <Select
                 size="large"
                 placeholder="Diện tích"
-                value={area}
-                onChange={setArea}
+                value={getCurrentAreaValue()}
+                onChange={handleAreaChange}
                 className="w-full md:w-48 rounded-xl"
                 options={[
                   { value: '', label: 'Tất cả diện tích' },
                   { value: '0-20', label: 'Dưới 20m²' },
                   { value: '20-30', label: '20 - 30m²' },
                   { value: '30-50', label: '30 - 50m²' },
-                  { value: '50+', label: 'Trên 50m²' },
+                  { value: '50-+', label: 'Trên 50m²' },
                 ]}
               />
 
-          
               <Button
                 type="primary"
                 size="large"
@@ -105,23 +146,21 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onSearch }) => {
             </div>
           </div>
 
-        
           <div className="flex flex-wrap items-center justify-center gap-2 mt-6">
             <span className="text-white/80 text-sm">Tìm kiếm phổ biến:</span>
-            {['Phòng trọ Hà Nội', 'Phòng trọ Quận 1', 'Phòng dưới 3 triệu', 'Căn hộ mini'].map((keyword) => (
-              <button
-                key={keyword}
-                onClick={() => {
-                  setSearchValue(keyword);
-                  onSearch(keyword);
-                }}
-                className="px-3 py-1.5 bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white text-xs md:text-sm rounded-full transition-all hover:scale-105"
-              >
-                {keyword}
-              </button>
-            ))}
+            {['Phòng trọ Hà Nội', 'Phòng trọ Quận 1', 'Phòng dưới 3 triệu', 'Căn hộ mini'].map(
+              (keyword) => (
+                <button
+                  key={keyword}
+                  onClick={() => handleQuickSearch(keyword)}
+                  className="px-3 py-1.5 bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white text-xs md:text-sm rounded-full transition-all hover:scale-105"
+                >
+                  {keyword}
+                </button>
+              ),
+            )}
           </div>
-        </div> */}
+        </div>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-12 max-w-4xl mx-auto">
           {[
@@ -132,7 +171,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onSearch }) => {
           ].map((stat, index) => (
             <div
               key={index}
-              className="bg-white/10 backdrop-blur-sm rounded-xl p-4 text-center text-white"
+              className="bg-white/10 backdrop-blur-sm rounded-xl p-4 text-center text-white hover:bg-white/20 transition-all"
             >
               <div className="text-2xl mb-2">
                 {typeof stat.icon === 'string' ? (

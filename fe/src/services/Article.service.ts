@@ -3,7 +3,6 @@
 import axiosInstance from '@/lib/config/axios';
 import { Article, CreateArticlePayload } from '@/types/Article';
 import { ApiResponse, QueryParams } from '@/types/api';
-
 const ENDPOINT = '/articles';
 
 interface GetAllArticlesResponse {
@@ -12,10 +11,9 @@ interface GetAllArticlesResponse {
 }
 
 export const ArticleService = {
-  // --- 1. LẤY TẤT CẢ (Dành cho trang chủ / Admin) ---
   getAll: async (params?: QueryParams): Promise<GetAllArticlesResponse> => {
     const response = await axiosInstance.get<any>(ENDPOINT, { params });
-    
+
     // Logic parse response giữ nguyên như file cũ của bạn
     const responseBody = response.data ? response.data : response;
     const payloadData = responseBody.data || {};
@@ -26,11 +24,9 @@ export const ArticleService = {
     return { articles, total };
   },
 
-  // --- 2. LẤY BÀI CỦA TÔI (API MỚI) ---
   getMyArticles: async (params?: QueryParams): Promise<GetAllArticlesResponse> => {
-    // Gọi vào endpoint /my-articles
     const response = await axiosInstance.get<any>(`${ENDPOINT}/my-articles`, { params });
-    
+
     const responseBody = response.data ? response.data : response;
     const payloadData = responseBody.data || {};
     const rawList = Array.isArray(payloadData) ? payloadData : payloadData.data || [];
@@ -40,7 +36,6 @@ export const ArticleService = {
     return { articles, total };
   },
 
-  // --- 3. DUYỆT BÀI (API MỚI - ADMIN) ---
   approve: async (id: string): Promise<void> => {
     await axiosInstance.patch(`${ENDPOINT}/${id}/approve`);
   },

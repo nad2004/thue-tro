@@ -5,7 +5,6 @@ import { ArticleService } from '@/services/Article.service';
 import { CreateArticlePayload } from '@/types/Article';
 import { QueryParams } from '@/types/api';
 
-// Hook lấy tất cả bài viết
 export const useArticles = (params: QueryParams = {}) => {
   return useQuery({
     queryKey: ['articles', params],
@@ -13,7 +12,6 @@ export const useArticles = (params: QueryParams = {}) => {
   });
 };
 
-// --- HOOK MỚI: LẤY BÀI VIẾT CỦA TÔI ---
 export const useMyArticles = (params: QueryParams = {}) => {
   return useQuery({
     queryKey: ['my-articles', params],
@@ -29,13 +27,11 @@ export const useArticle = (id: string) => {
   });
 };
 
-// --- HOOK MỚI: DUYỆT BÀI VIẾT ---
 export const useApproveArticle = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: ArticleService.approve,
     onSuccess: () => {
-      // Làm mới cả danh sách chung và danh sách cá nhân
       queryClient.invalidateQueries({ queryKey: ['articles'] });
       queryClient.invalidateQueries({ queryKey: ['my-articles'] });
       message.success('Đã duyệt bài viết thành công');

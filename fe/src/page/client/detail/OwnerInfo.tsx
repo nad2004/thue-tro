@@ -12,7 +12,7 @@ export default function OwnerInfo({ author }: OwnerInfoProps) {
   if (!author) return null;
 
   // Placeholder data
-  const displayPhone = "098 888 ****"; 
+  const displayPhone = '098 888 ****';
   const displayEmail = author.email;
 
   const handleCall = () => {
@@ -24,40 +24,40 @@ export default function OwnerInfo({ author }: OwnerInfoProps) {
   };
 
   return (
-    <Card 
-      bordered={false} 
+    <Card
+      bordered={false}
       className="shadow-md rounded-xl overflow-hidden"
       bodyStyle={{ padding: '24px' }}
     >
       {contextHolder}
       <div className="flex flex-col items-center text-center mb-6">
         <div className="relative mb-3">
-          <Avatar 
-            size={80} 
-            src={author.avatar} 
+          <Avatar
+            size={80}
+            src={author.avatar}
             icon={<User size={40} />}
             className="border-4 border-white shadow-sm bg-gray-200 flex items-center justify-center"
           />
           <Tooltip title="Đang hoạt động">
-             <span className="absolute bottom-1 right-1 w-4 h-4 bg-green-500 border-2 border-white rounded-full"></span>
+            <span className="absolute bottom-1 right-1 w-4 h-4 bg-green-500 border-2 border-white rounded-full"></span>
           </Tooltip>
         </div>
-        
-        <Title level={4} style={{ marginBottom: 4 }}>{author.fullName}</Title>
-        
-    
-        
+
+        <Title level={4} style={{ marginBottom: 4 }}>
+          {author.fullName}
+        </Title>
+
         {author.role === 'Landlord' && (
-           <Tag color="success" icon={<CheckCircle2 size={12}/>} className="m-0 rounded-full px-2">
-             Chính chủ
-           </Tag>
+          <Tag color="success" icon={<CheckCircle2 size={12} />} className="m-0 rounded-full px-2">
+            Chính chủ
+          </Tag>
         )}
       </div>
 
       <div className="flex flex-col gap-3">
-        <Button 
-          type="primary" 
-          size="large" 
+        <Button
+          type="primary"
+          size="large"
           block
           icon={<Phone size={18} />}
           onClick={handleCall}
@@ -66,7 +66,7 @@ export default function OwnerInfo({ author }: OwnerInfoProps) {
           {displayPhone} · Hiện số
         </Button>
 
-        <Button 
+        <Button
           size="large"
           block
           icon={<MessageCircle size={18} />}

@@ -6,7 +6,7 @@ dotenv.config();
 const connectDB = async () => {
   try {
     if (!process.env.MONGODB_URI) {
-      console.error("❌ Lỗi: MONGODB_URI không được định nghĩa trong .env");
+      console.error('❌ Lỗi: MONGODB_URI không được định nghĩa trong .env');
       process.exit(1);
     }
     await mongoose.connect(process.env.MONGODB_URI);

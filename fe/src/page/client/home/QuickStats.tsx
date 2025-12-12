@@ -18,7 +18,7 @@ const QuickStats: React.FC<QuickStatsProps> = ({ totalArticles = 0 }) => {
     {
       icon: Clock,
       label: 'Tin mới trong tuần',
-      value: 'N/A', // Có thể thêm API endpoint riêng để lấy số liệu này
+      value: 'N/A',
       color: 'from-green-500 to-green-600',
       bgColor: 'bg-green-50',
       textColor: 'text-green-600',
@@ -26,7 +26,7 @@ const QuickStats: React.FC<QuickStatsProps> = ({ totalArticles = 0 }) => {
     {
       icon: DollarSign,
       label: 'Giá TB (triệu/tháng)',
-      value: 'N/A', // API có thể trả về thống kê này
+      value: 'N/A',
       color: 'from-orange-500 to-orange-600',
       bgColor: 'bg-orange-50',
       textColor: 'text-orange-600',
@@ -34,7 +34,7 @@ const QuickStats: React.FC<QuickStatsProps> = ({ totalArticles = 0 }) => {
     {
       icon: MapPin,
       label: 'Khu vực',
-      value: '63+', // Static hoặc từ API
+      value: '63+',
       color: 'from-purple-500 to-purple-600',
       bgColor: 'bg-purple-50',
       textColor: 'text-purple-600',
@@ -62,10 +62,9 @@ const QuickStats: React.FC<QuickStatsProps> = ({ totalArticles = 0 }) => {
               <div className="text-xs md:text-sm text-gray-500 font-medium">{stat.label}</div>
             </div>
 
-            {/* Progress indicator */}
             <div className="mt-3 h-1 bg-gray-100 rounded-full overflow-hidden">
               <div
-                className={`h-full bg-gradient-to-r ${stat.color} transition-all duration-1000 ease-out`}
+                className={`h-full bg-linear-to-r ${stat.color} transition-all duration-1000 ease-out`}
                 style={{ width: '75%' }}
               ></div>
             </div>

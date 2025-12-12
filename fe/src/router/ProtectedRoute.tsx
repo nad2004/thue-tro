@@ -4,7 +4,7 @@ import { useAuthStatus } from '@/hooks/useAuth';
 import { Spin } from 'antd';
 
 const ProtectedRoute: React.FC = () => {
-  const { isLoggedIn, isLoading } = useAuthStatus();
+  const { isLoggedIn, isLoading, isAdmin } = useAuthStatus();
   const location = useLocation();
 
   if (isLoading) {
@@ -14,10 +14,7 @@ const ProtectedRoute: React.FC = () => {
       </div>
     );
   }
-
-  // Nếu chưa login -> Đá về Login
   if (!isLoggedIn) {
-    // state={{ from: location }} giúp redirect lại trang cũ sau khi login thành công
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 

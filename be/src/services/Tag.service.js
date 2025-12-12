@@ -2,11 +2,10 @@ import Tag from '../models/Tag.model.js';
 import slugify from 'slugify';
 
 export class TagService {
-  
   // Tạo mới thẻ
   async create(data) {
     if (!data.tagSlug && data.tagName) {
-        data.tagSlug = slugify(data.tagName, { lower: true, strict: true });
+      data.tagSlug = slugify(data.tagName, { lower: true, strict: true });
     }
     const newTag = new Tag(data);
     await newTag.save();
@@ -23,7 +22,7 @@ export class TagService {
   async getById(id) {
     const tag = await Tag.findById(id);
     if (!tag) {
-        throw new Error("Không tìm thấy thẻ.");
+      throw new Error('Không tìm thấy thẻ.');
     }
     return tag;
   }
@@ -35,46 +34,38 @@ export class TagService {
   async update(id, data) {
     // Nếu có cập nhật tên, tạo lại slug mới
     if (data.tagName) {
-        data.tagSlug = slugify(data.tagName, { lower: true, strict: true });
+      data.tagSlug = slugify(data.tagName, { lower: true, strict: true });
     }
 
-    const updatedTag = await Tag.findByIdAndUpdate(
-        id, 
-        data, 
-        { new: true, runValidators: true }
-    );
+    const updatedTag = await Tag.findByIdAndUpdate(id, data, { new: true, runValidators: true });
 
     if (!updatedTag) {
-      throw new Error("Không tìm thấy thẻ để cập nhật.");
+      throw new Error('Không tìm thấy thẻ để cập nhật.');
     }
     return updatedTag;
   }
-async delete(id) {
+  async delete(id) {
     const session = await mongoose.startSession();
     session.startTransaction();
 
     try {
-        const result = await Tag.findByIdAndDelete(id).session(session);
+      const result = await Tag.findByIdAndDelete(id).session(session);
 
-        if (!result) {
-            throw new Error("Không tìm thấy thẻ để xóa.");
-        }
+      if (!result) {
+        throw new Error('Không tìm thấy thẻ để xóa.');
+      }
 
-        await Article.updateMany(
-            { tags: id },
-            { $pull: { tags: id } }
-        ).session(session);
+      await Article.updateMany({ tags: id }, { $pull: { tags: id } }).session(session);
 
-        await session.commitTransaction();
-        return { message: "Đã xóa triệt để thành công", id: result._id };
-
+      await session.commitTransaction();
+      return { message: 'Đã xóa triệt để thành công', id: result._id };
     } catch (error) {
-        await session.abortTransaction(); // Hoàn tác nếu có lỗi bất kỳ
-        throw error;
+      await session.abortTransaction(); // Hoàn tác nếu có lỗi bất kỳ
+      throw error;
     } finally {
-        session.endSession();
+      session.endSession();
     }
-}
+  }
 }
 
 export default new TagService();

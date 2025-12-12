@@ -1,7 +1,5 @@
-// src/models/User.ts
-
+import { Article } from './Article';
 export type UserRole = 'Admin' | 'Landlord' | 'Tenant';
-// Interface cho đối tượng User trong Frontend
 export interface IUser {
   id: string;
   fullName: string;
@@ -9,10 +7,10 @@ export interface IUser {
   phoneNumber: string;
   role: UserRole;
   avatar: string;
+  savedArticles: Article[];
   createdAt: string;
 }
 
-// Interface cho dữ liệu thô từ Backend (có thể có _id)
 export interface IUserBackend {
   _id?: string;
   id?: string;
@@ -22,6 +20,7 @@ export interface IUserBackend {
   avatar?: string;
   createdAt?: string;
   phoneNumber?: string;
+  savedArticles?: Article[];
 }
 
 export class User implements IUser {
@@ -32,8 +31,19 @@ export class User implements IUser {
   role: UserRole;
   avatar: string;
   createdAt: string;
+  savedArticles: Article[];
 
-  constructor({ _id, id, fullName, email, role, avatar, createdAt, phoneNumber }: IUserBackend) {
+  constructor({
+    _id,
+    id,
+    fullName,
+    email,
+    role,
+    avatar,
+    createdAt,
+    phoneNumber,
+    savedArticles,
+  }: IUserBackend) {
     this.id = id || _id || '';
     this.fullName = fullName || '';
     this.email = email || '';
@@ -41,9 +51,9 @@ export class User implements IUser {
     this.role = role || 'Tenant';
     this.avatar = avatar || '';
     this.createdAt = createdAt || '';
+    this.savedArticles = savedArticles || [];
   }
 
-  // Helper check quyền
   isAdmin(): boolean {
     return this.role === 'Admin';
   }

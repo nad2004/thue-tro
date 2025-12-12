@@ -10,7 +10,6 @@ export const useAuthActions = () => {
   const loginMutation = useMutation({
     mutationFn: (data: LoginValues) => AuthService.login(data),
     onSuccess: (data) => {
-      // Map đúng dữ liệu vào Store
       if (data.token && data.data) {
         setAuth({ user: data.data, token: data.token });
       }
@@ -49,12 +48,11 @@ export const useAuthStatus = () => {
   const user = useAuthStore((state) => state.user);
   const token = useAuthStore((state) => state.token);
   const isLoading = useAuthStore((state) => state.isLoading);
-
   return {
     user,
     token,
     isLoading,
     isLoggedIn: !!token,
-    isAdmin: user?.role === 'Admin', // Helper tiện ích
+    isAdmin: user?.role === 'Admin',
   };
 };

@@ -55,9 +55,7 @@ const FilterBar: React.FC<FilterBarProps> = ({
 
   return (
     <div className="space-y-4">
-      {/* Main Filter Row */}
       <div className="flex flex-col md:flex-row gap-3">
-        {/* Search Input */}
         <div className="flex-1">
           <Input
             size="large"
@@ -71,7 +69,6 @@ const FilterBar: React.FC<FilterBarProps> = ({
           />
         </div>
 
-        {/* Category Select */}
         <Select
           size="large"
           placeholder="Danh mục"
@@ -86,7 +83,6 @@ const FilterBar: React.FC<FilterBarProps> = ({
           ))}
         </Select>
 
-        {/* Advanced Filter Button */}
         <Button
           size="large"
           icon={<SlidersHorizontal size={18} />}
@@ -96,7 +92,6 @@ const FilterBar: React.FC<FilterBarProps> = ({
           <span className="hidden md:inline">Lọc nâng cao</span>
         </Button>
 
-        {/* Search Button */}
         <Button
           type="primary"
           size="large"
@@ -108,7 +103,6 @@ const FilterBar: React.FC<FilterBarProps> = ({
         </Button>
       </div>
 
-      {/* Advanced Filter Drawer */}
       <Drawer
         title={
           <div className="flex items-center gap-2">
@@ -123,7 +117,6 @@ const FilterBar: React.FC<FilterBarProps> = ({
         closeIcon={<X size={20} />}
       >
         <div className="space-y-6">
-          {/* Price Range */}
           <div>
             <div className="flex items-center justify-between mb-3">
               <label className="text-sm font-semibold text-gray-700">
@@ -143,7 +136,6 @@ const FilterBar: React.FC<FilterBarProps> = ({
             />
           </div>
 
-          {/* Area Range */}
           <div>
             <div className="flex items-center justify-between mb-3">
               <label className="text-sm font-semibold text-gray-700">Diện tích (m²)</label>
@@ -161,7 +153,6 @@ const FilterBar: React.FC<FilterBarProps> = ({
             />
           </div>
 
-          {/* Furniture Status */}
           <div>
             <label className="text-sm font-semibold text-gray-700 block mb-3">
               Tình trạng nội thất
@@ -173,7 +164,6 @@ const FilterBar: React.FC<FilterBarProps> = ({
             </Select>
           </div>
 
-          {/* Utilities */}
           <div>
             <label className="text-sm font-semibold text-gray-700 block mb-3">Tiện ích</label>
             <div className="space-y-2">
@@ -191,7 +181,6 @@ const FilterBar: React.FC<FilterBarProps> = ({
             </div>
           </div>
 
-          {/* Action Buttons */}
           <div className="flex gap-3 pt-4 border-t">
             <Button block size="large" onClick={handleResetAdvanced}>
               Đặt lại

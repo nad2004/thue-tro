@@ -54,17 +54,15 @@ export default function RegisterPage() {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-linear-to-br from-orange-50 to-pink-50 p-4">
-      <Card 
-        style={{ width: 500 }} 
-        bordered={false} 
-        className="shadow-2xl rounded-2xl"
-      >
+      <Card style={{ width: 500 }} bordered={false} className="shadow-2xl rounded-2xl">
         {/* Header */}
         <div className="text-center mb-8">
           <div className="w-16 h-16 bg-linear-to-br from-orange-500 to-pink-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
             <UserOutlined className="text-white text-3xl" />
           </div>
-          <Title level={2} className="mb-2!">Tạo Tài Khoản</Title>
+          <Title level={2} className="mb-2!">
+            Tạo Tài Khoản
+          </Title>
           <Text type="secondary">Đăng ký để bắt đầu tìm phòng trọ</Text>
         </div>
 
@@ -100,9 +98,7 @@ export default function RegisterPage() {
               )}
             />
             {errors.fullName && (
-              <span className="text-red-500 text-sm mt-1 block">
-                {errors.fullName.message}
-              </span>
+              <span className="text-red-500 text-sm mt-1 block">{errors.fullName.message}</span>
             )}
           </div>
 
@@ -126,9 +122,7 @@ export default function RegisterPage() {
               )}
             />
             {errors.email && (
-              <span className="text-red-500 text-sm mt-1 block">
-                {errors.email.message}
-              </span>
+              <span className="text-red-500 text-sm mt-1 block">{errors.email.message}</span>
             )}
           </div>
 
@@ -153,9 +147,7 @@ export default function RegisterPage() {
               )}
             />
             {errors.phoneNumber && (
-              <span className="text-red-500 text-sm mt-1 block">
-                {errors.phoneNumber.message}
-              </span>
+              <span className="text-red-500 text-sm mt-1 block">{errors.phoneNumber.message}</span>
             )}
           </div>
 
@@ -179,9 +171,7 @@ export default function RegisterPage() {
               )}
             />
             {errors.password && (
-              <span className="text-red-500 text-sm mt-1 block">
-                {errors.password.message}
-              </span>
+              <span className="text-red-500 text-sm mt-1 block">{errors.password.message}</span>
             )}
           </div>
 
@@ -194,21 +184,16 @@ export default function RegisterPage() {
               name="role"
               control={control}
               render={({ field }) => (
-                <Radio.Group 
-                  {...field} 
-                  size="large"
-                  className="w-full"
-                >
+                <Radio.Group {...field} size="large" className="w-full">
                   <Space direction="vertical" className="w-full">
-                    <Radio 
-                      value="Tenant"
-                      className="w-full"
-                    >
-                      <div className={`flex items-center gap-3 p-3 rounded-lg border-2 transition-all ${
-                        selectedRole === 'Tenant' 
-                          ? 'border-orange-500 bg-orange-50' 
-                          : 'border-gray-200 hover:border-orange-300'
-                      }`}>
+                    <Radio value="Tenant" className="w-full">
+                      <div
+                        className={`flex items-center gap-3 p-3 rounded-lg border-2 transition-all ${
+                          selectedRole === 'Tenant'
+                            ? 'border-orange-500 bg-orange-50'
+                            : 'border-gray-200 hover:border-orange-300'
+                        }`}
+                      >
                         <UserOutlined className="text-2xl text-orange-500" />
                         <div>
                           <div className="font-semibold text-gray-800">Người thuê trọ</div>
@@ -216,16 +201,15 @@ export default function RegisterPage() {
                         </div>
                       </div>
                     </Radio>
-                    
-                    <Radio 
-                      value="Landlord"
-                      className="w-full"
-                    >
-                      <div className={`flex items-center gap-3 p-3 rounded-lg border-2 transition-all ${
-                        selectedRole === 'Landlord' 
-                          ? 'border-blue-500 bg-blue-50' 
-                          : 'border-gray-200 hover:border-blue-300'
-                      }`}>
+
+                    <Radio value="Landlord" className="w-full">
+                      <div
+                        className={`flex items-center gap-3 p-3 rounded-lg border-2 transition-all ${
+                          selectedRole === 'Landlord'
+                            ? 'border-blue-500 bg-blue-50'
+                            : 'border-gray-200 hover:border-blue-300'
+                        }`}
+                      >
                         <HomeOutlined className="text-2xl text-blue-500" />
                         <div>
                           <div className="font-semibold text-gray-800">Chủ nhà</div>
@@ -238,17 +222,15 @@ export default function RegisterPage() {
               )}
             />
             {errors.role && (
-              <span className="text-red-500 text-sm mt-1 block">
-                {errors.role.message}
-              </span>
+              <span className="text-red-500 text-sm mt-1 block">{errors.role.message}</span>
             )}
           </div>
 
-          <Button 
-            type="primary" 
-            htmlType="submit" 
-            block 
-            size="large" 
+          <Button
+            type="primary"
+            htmlType="submit"
+            block
+            size="large"
             loading={isRegistering}
             className="bg-linear-to-r! from-orange-500! to-pink-500! hover:from-orange-600! hover:to-pink-600! border-none! h-12! rounded-lg! font-semibold! mt-6!"
           >

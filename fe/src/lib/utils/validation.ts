@@ -13,26 +13,22 @@ export const registerSchema = z.object({
     .string()
     .min(3, 'Họ tên phải có ít nhất 3 ký tự')
     .max(50, 'Họ tên không được quá 50 ký tự'),
-  
-  email: z
-    .string()
-    .email('Email không hợp lệ')
-    .min(1, 'Email là bắt buộc'),
-  
+
+  email: z.string().email('Email không hợp lệ').min(1, 'Email là bắt buộc'),
+
   phoneNumber: z
     .string()
     .regex(/^(0|\+84)[0-9]{9,10}$/, 'Số điện thoại không hợp lệ')
     .min(1, 'Số điện thoại là bắt buộc'),
-  
+
   password: z
     .string()
     .min(6, 'Mật khẩu phải có ít nhất 6 ký tự')
     .max(50, 'Mật khẩu không được quá 50 ký tự'),
-  
-  role: z
-    .enum(['Landlord', 'Tenant'], {
-      errorMap: () => ({ message: 'Vui lòng chọn vai trò' })
-    })
+
+  role: z.enum(['Landlord', 'Tenant'], {
+    errorMap: () => ({ message: 'Vui lòng chọn vai trò' }),
+  }),
 });
 
 export type RegisterValues = z.infer<typeof registerSchema>;

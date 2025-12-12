@@ -1,25 +1,21 @@
 import React from 'react';
-import { Navigate, Outlet } from 'react-router-dom';
+import { Outlet, Navigate, useLocation } from 'react-router-dom';
 import { useAuthStatus } from '@/hooks/useAuth';
-import { Spin } from 'antd'; // Hoặc component Loading của bạn
+import { Spin } from 'antd';
 
 const PublicRoute: React.FC = () => {
-  const { isLoggedIn, isLoading } = useAuthStatus();
-
+  const { isLoading, isAdmin } = useAuthStatus();
+  const location = useLocation();
   if (isLoading) {
-    // UI Loading chuyên nghiệp hơn
     return (
       <div className="flex h-screen w-full items-center justify-center">
-        <Spin size="large" tip="Đang kiểm tra..." />
+        <Spin size="large" />
       </div>
     );
   }
-
-  // Nếu đã login -> Đá về Home (Dashboard)
-  if (isLoggedIn) {
-    return <Navigate to="/" replace />;
+  if (isAdmin) {
+    return <Navigate to="/admin" state={{ from: location }} replace />;
   }
-
   return <Outlet />;
 };
 

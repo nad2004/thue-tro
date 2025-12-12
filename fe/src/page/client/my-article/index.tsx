@@ -11,7 +11,7 @@ import MyArticlesList from './MyArticlesList';
 
 const MyArticlesPage: React.FC = () => {
   const navigate = useNavigate();
-  
+
   // 1. State quản lý bộ lọc
   const [filters, setFilters] = useState<QueryParams>({
     page: 1,
@@ -22,7 +22,7 @@ const MyArticlesPage: React.FC = () => {
 
   // 2. Fetch Data
   const { data, isLoading } = useMyArticles(filters);
-  
+
   // 3. Mutation Xóa
   const deleteMutation = useDeleteArticle();
 
@@ -56,22 +56,31 @@ const MyArticlesPage: React.FC = () => {
   }, []);
 
   // Xử lý Xóa
-  const handleDelete = useCallback((id: string) => {
-    deleteMutation.mutate(id);
-  }, [deleteMutation]);
+  const handleDelete = useCallback(
+    (id: string) => {
+      deleteMutation.mutate(id);
+    },
+    [deleteMutation],
+  );
 
   // Điều hướng
   const handleCreate = useCallback(() => {
     navigate('/my-article');
   }, [navigate]);
 
-  const handleEdit = useCallback((id: string) => {
-    navigate(`/edit-post/${id}`);
-  }, [navigate]);
+  const handleEdit = useCallback(
+    (id: string) => {
+      navigate(`/edit-post/${id}`);
+    },
+    [navigate],
+  );
 
-  const handleView = useCallback((id: string) => {
-    navigate(`/detail/${id}`);
-  }, [navigate]);
+  const handleView = useCallback(
+    (id: string) => {
+      navigate(`/detail/${id}`);
+    },
+    [navigate],
+  );
 
   return (
     <MyArticlesList
@@ -81,7 +90,6 @@ const MyArticlesPage: React.FC = () => {
       loading={isLoading}
       currentPage={filters.page || 1}
       pageSize={filters.limit || 10}
-      
       // Handler Props (all memoized)
       onTableChange={handleTableChange}
       onSearch={handleSearch}

@@ -1,13 +1,6 @@
 import React, { useState, useCallback, useMemo } from 'react';
-import {
-  Card,
-  Button,
-  Tag as AntTag,
-  Table,
-} from 'antd';
-import { 
-  PlusOutlined, 
-} from '@ant-design/icons';
+import { Card, Button, Tag as AntTag, Table } from 'antd';
+import { PlusOutlined } from '@ant-design/icons';
 import type { ColumnsType, TablePaginationConfig } from 'antd/es/table';
 import { useNavigate } from 'react-router-dom';
 
@@ -28,7 +21,7 @@ import { QueryParams } from '@/types/api';
 
 const ArticlesPage: React.FC = () => {
   const navigate = useNavigate();
-  
+
   // 1. State quản lý Modal và Filters
   const [formVisible, setFormVisible] = useState(false);
   const [editingArticle, setEditingArticle] = useState<Article | null>(null);
@@ -59,18 +52,21 @@ const ArticlesPage: React.FC = () => {
     setEditingArticle(null);
   }, []);
 
-  const handleSubmit = useCallback(async (values: CreateArticlePayload) => {
-    try {
-      if (editingArticle) {
-        await updateArticle.mutateAsync({ id: editingArticle.id, ...values });
-      } else {
-        await createArticle.mutateAsync(values);
+  const handleSubmit = useCallback(
+    async (values: CreateArticlePayload) => {
+      try {
+        if (editingArticle) {
+          await updateArticle.mutateAsync({ id: editingArticle.id, ...values });
+        } else {
+          await createArticle.mutateAsync(values);
+        }
+        handleCloseForm();
+      } catch (error) {
+        console.error(error);
       }
-      handleCloseForm();
-    } catch (error) {
-      console.error(error);
-    }
-  }, [editingArticle, updateArticle, createArticle, handleCloseForm]);
+    },
+    [editingArticle, updateArticle, createArticle, handleCloseForm],
+  );
 
   const handleTableChange = useCallback((pagination: TablePaginationConfig) => {
     setFilters((prev) => ({
@@ -96,79 +92,94 @@ const ArticlesPage: React.FC = () => {
     }));
   }, []);
 
-  const handleView = useCallback((id: string) => {
-    navigate(`/detail/${id}`);
-  }, [navigate]);
+  const handleView = useCallback(
+    (id: string) => {
+      navigate(`/detail/${id}`);
+    },
+    [navigate],
+  );
 
-  const handleEdit = useCallback((article: Article) => {
-    handleOpenForm(article);
-  }, [handleOpenForm]);
+  const handleEdit = useCallback(
+    (article: Article) => {
+      handleOpenForm(article);
+    },
+    [handleOpenForm],
+  );
 
-  const handleDelete = useCallback((id: string) => {
-    deleteArticle.mutate(id);
-  }, [deleteArticle]);
+  const handleDelete = useCallback(
+    (id: string) => {
+      deleteArticle.mutate(id);
+    },
+    [deleteArticle],
+  );
 
-  const handleApprove = useCallback((id: string) => {
-    approveArticle.mutate(id);
-  }, [approveArticle]);
+  const handleApprove = useCallback(
+    (id: string) => {
+      approveArticle.mutate(id);
+    },
+    [approveArticle],
+  );
 
   // 4. Cấu hình cột cho Table (useMemo)
-  const columns: ColumnsType<Article> = useMemo(() => [
-    {
-      title: 'Tiêu đề',
-      dataIndex: 'title',
-      key: 'title',
-      width: '30%',
-      render: (text) => <span className="font-semibold text-gray-700">{text}</span>,
-    },
-    {
-      title: 'Danh mục',
-      dataIndex: 'categoryID',
-      key: 'categoryID',
-      render: (category) => (
-        <AntTag color="blue">{category?.categoryName || 'Chưa phân loại'}</AntTag>
-      ),
-    },
-    {
-      title: 'Tác giả',
-      dataIndex: 'authorID',
-      key: 'authorID',
-      render: (author) => (
-        <span className="font-semibold text-gray-700">{author?.fullName || 'Ẩn danh'}</span>
-      ),
-    },
-    {
-      title: 'Trạng thái',
-      dataIndex: 'status',
-      key: 'status',
-      width: 120,
-      align: 'center',
-      render: (status) => <ArticleStatusTag status={status} />,
-    },
-    {
-      title: 'Ngày tạo',
-      dataIndex: 'createdAt',
-      key: 'createdAt',
-      width: 150,
-      render: (date: string) => (date ? new Date(date).toLocaleDateString('vi-VN') : '-'),
-    },
-    {
-      title: 'Hành động',
-      key: 'action',
-      align: 'center',
-      width: 180,
-      render: (_, record) => (
-        <ArticleActions
-          article={record}
-          onView={handleView}
-          onEdit={handleEdit}
-          onDelete={handleDelete}
-          onApprove={handleApprove}
-          showApprove={true}
-        />
-      ),
-    },
-  ], [handleView, handleEdit, handleDelete, handleApprove]);
+  const columns: ColumnsType<Article> = useMemo(
+    () => [
+      {
+        title: 'Tiêu đề',
+        dataIndex: 'title',
+        key: 'title',
+        width: '30%',
+        render: (text) => <span className="font-semibold text-gray-700">{text}</span>,
+      },
+      {
+        title: 'Danh mục',
+        dataIndex: 'categoryID',
+        key: 'categoryID',
+        render: (category) => (
+          <AntTag color="blue">{category?.categoryName || 'Chưa phân loại'}</AntTag>
+        ),
+      },
+      {
+        title: 'Tác giả',
+        dataIndex: 'authorID',
+        key: 'authorID',
+        render: (author) => (
+          <span className="font-semibold text-gray-700">{author?.fullName || 'Ẩn danh'}</span>
+        ),
+      },
+      {
+        title: 'Trạng thái',
+        dataIndex: 'status',
+        key: 'status',
+        width: 120,
+        align: 'center',
+        render: (status) => <ArticleStatusTag status={status} />,
+      },
+      {
+        title: 'Ngày tạo',
+        dataIndex: 'createdAt',
+        key: 'createdAt',
+        width: 150,
+        render: (date: string) => (date ? new Date(date).toLocaleDateString('vi-VN') : '-'),
+      },
+      {
+        title: 'Hành động',
+        key: 'action',
+        align: 'center',
+        width: 180,
+        render: (_, record) => (
+          <ArticleActions
+            article={record}
+            onView={handleView}
+            onEdit={handleEdit}
+            onDelete={handleDelete}
+            onApprove={handleApprove}
+            showApprove={true}
+          />
+        ),
+      },
+    ],
+    [handleView, handleEdit, handleDelete, handleApprove],
+  );
 
   return (
     <div className="p-6 bg-gray-50 min-h-screen">

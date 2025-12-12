@@ -1,17 +1,21 @@
-// src/models/Category.ts
-
 export interface ICategory {
   id: string;
   categoryName: string;
   categorySlug: string;
   description: string;
-  parentCategoryId: string | null;
+  // parentCategory: string | null;
 }
-
+export interface ICategoryBackend {
+  _id?: string;
+  categoryName: string;
+  categorySlug?: string;
+  description?: string;
+  parentCategory?: ICategoryBackend;
+}
 export interface CreateCategoryPayload {
   categoryName: string;
   categorySlug: string;
-  parentCategory: string | null;
+  // parentCategory: string;
 }
 
 export class Category implements ICategory {
@@ -19,27 +23,24 @@ export class Category implements ICategory {
   categoryName: string;
   categorySlug: string;
   description: string;
-  parentCategoryId: string | null;
+  // parentCategory: string;
 
-  constructor(data: any) {
-    this.id = data?.id || data?._id || '';
-
-    // Mapping linh hoạt
-    this.categoryName = data?.categoryName || data?.name || '';
-    this.categorySlug = data?.categorySlug || data?.slug || '';
+  constructor(data: ICategoryBackend) {
+    this.id = data?._id || '';
+    this.categoryName = data?.categoryName || '';
+    this.categorySlug = data?.categorySlug || '';
     this.description = data?.description || '';
 
-    // Xử lý logic parentCategory (Object hoặc ID string)
     const parent = data?.parentCategory;
-    this.parentCategoryId =
-      typeof parent === 'object' && parent !== null ? parent._id : parent || null;
+    // this.parentCategory =
+    //   typeof parent === 'object' && parent !== null ? parent._id : parent || null;
   }
 
   toApiPayload(): CreateCategoryPayload {
     return {
       categoryName: this.categoryName,
       categorySlug: this.categorySlug,
-      parentCategory: this.parentCategoryId,
+      // parentCategory: this.parentCategory,
     };
   }
 }

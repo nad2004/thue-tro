@@ -1,8 +1,6 @@
-// src/types/Article.ts
-
-import { ICategory } from './Category';
+import { ICategoryBackend, ICategory } from './Category';
 import { ITag } from './Tag';
-import { IUser } from './User';
+import { IUser, IUserBackend } from './User';
 
 export interface IArticle {
   id: string;
@@ -19,9 +17,25 @@ export interface IArticle {
   authorID: IUser | null;
   createdAt: string;
   updatedAt: string;
+  isLiked: boolean;
 }
-
-// Payload để tạo/cập nhật bài viết (gửi qua FormData)
+export interface IArticleBackend {
+  _id: string;
+  title: string;
+  summary: string;
+  content: string;
+  thumbnail: string;
+  images: string[];
+  price: number;
+  area: number;
+  status: string;
+  categoryID: ICategoryBackend | null;
+  tags: ITag[];
+  authorID: IUserBackend | null;
+  createdAt: string;
+  updatedAt: string;
+  isLiked?: boolean;
+}
 export interface CreateArticlePayload {
   title: string;
   summary: string;
@@ -29,10 +43,10 @@ export interface CreateArticlePayload {
   price: number;
   area: number;
   categoryID: string;
-  tags?: string[]; // Array of tag IDs
-  thumbnail?: File | Blob; // File object cho thumbnail
-  images?: (File | Blob)[]; // Array of File objects cho images
-  status?: string; // 'Published' | 'Draft' | 'Pending'
+  tags?: string[];
+  thumbnail?: File | Blob;
+  images?: (File | Blob)[];
+  status?: string;
 }
 
 export class Article implements IArticle {
@@ -50,9 +64,10 @@ export class Article implements IArticle {
   authorID: IUser | null;
   createdAt: string;
   updatedAt: string;
+  isLiked: boolean;
 
-  constructor(data: any) {
-    this.id = data?.id || data?._id || '';
+  constructor(data: IArticleBackend) {
+    this.id = data?._id || '';
     this.title = data?.title || '';
     this.summary = data?.summary || '';
     this.content = data?.content || '';
@@ -61,15 +76,15 @@ export class Article implements IArticle {
     this.price = data?.price || 0;
     this.area = data?.area || 0;
     this.status = data?.status || 'Draft';
-
+    this.isLiked = data?.isLiked || false;
     // Map category
     this.categoryID = data?.categoryID
       ? {
-          id: data.categoryID.id || data.categoryID._id,
-          categoryName: data.categoryID.categoryName || data.categoryID.name,
-          categorySlug: data.categoryID.categorySlug || data.categoryID.slug,
+          id: data.categoryID._id || '',
+          categoryName: data.categoryID.categoryName || '',
+          categorySlug: data.categoryID.categorySlug || '',
           description: data.categoryID.description || '',
-          parentCategoryId: data.categoryID.parentCategoryId || null,
+          // parentCategoryId: data.categoryID.parentCategoryId || null,
         }
       : null;
 
@@ -85,7 +100,7 @@ export class Article implements IArticle {
     // Map author
     this.authorID = data?.authorID
       ? {
-          id: data.authorID.id || data.authorID._id,
+          id: data.authorID.id || data.authorID._id || '',
           // username: data.author.username || "",
           email: data.authorID.email || '',
           fullName: data.authorID.fullName || '',
@@ -93,6 +108,7 @@ export class Article implements IArticle {
           phoneNumber: data.authorID.phoneNumber || '',
           role: data.authorID.role || 'Tenant',
           createdAt: data.authorID.createdAt || '',
+          savedArticles: data.authorID.savedArticles || [],
         }
       : null;
 

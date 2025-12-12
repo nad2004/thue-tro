@@ -1,11 +1,6 @@
 import React, { useCallback } from 'react';
 import { Button, Space, Tooltip, Popconfirm } from 'antd';
-import {
-  EditOutlined,
-  DeleteOutlined,
-  EyeOutlined,
-  CheckCircleOutlined,
-} from '@ant-design/icons';
+import { EditOutlined, DeleteOutlined, EyeOutlined, CheckCircleOutlined } from '@ant-design/icons';
 import { Article } from '@/types/Article';
 
 interface ArticleActionsProps {
@@ -17,34 +12,28 @@ interface ArticleActionsProps {
   showApprove?: boolean;
 }
 
-const ArticleActions: React.FC<ArticleActionsProps> = React.memo(({
-  article,
-  onView,
-  onEdit,
-  onDelete,
-  onApprove,
-  showApprove = false,
-}) => {
-  const handleView = useCallback(() => {
-    onView(article.id);
-  }, [onView, article.id]);
+const ArticleActions: React.FC<ArticleActionsProps> = React.memo(
+  ({ article, onView, onEdit, onDelete, onApprove, showApprove = false }) => {
+    const handleView = useCallback(() => {
+      onView(article.id);
+    }, [onView, article.id]);
 
-  const handleEdit = useCallback(() => {
-    onEdit(article);
-  }, [onEdit, article]);
+    const handleEdit = useCallback(() => {
+      onEdit(article);
+    }, [onEdit, article]);
 
-  const handleDelete = useCallback(() => {
-    onDelete(article.id);
-  }, [onDelete, article.id]);
+    const handleDelete = useCallback(() => {
+      onDelete(article.id);
+    }, [onDelete, article.id]);
 
-  const handleApprove = useCallback(() => {
-    onApprove?.(article.id);
-  }, [onApprove, article.id]);
+    const handleApprove = useCallback(() => {
+      onApprove?.(article.id);
+    }, [onApprove, article.id]);
 
-  return (
-    <Space size="small">
-      {/* View Button */}
-      {/* <Tooltip title="Xem chi tiết">
+    return (
+      <Space size="small">
+        {/* View Button */}
+        {/* <Tooltip title="Xem chi tiết">
         <Button
           type="text"
           icon={<EyeOutlined className="text-gray-500" />}
@@ -52,50 +41,48 @@ const ArticleActions: React.FC<ArticleActionsProps> = React.memo(({
         />
       </Tooltip> */}
 
-      {/* Approve Button - Only show for Pending articles */}
-      {showApprove && article.status === 'Pending' && onApprove && (
-        <Tooltip title="Duyệt bài">
+        {/* Approve Button - Only show for Pending articles */}
+        {showApprove && article.status === 'Pending' && onApprove && (
+          <Tooltip title="Duyệt bài">
+            <Popconfirm
+              title="Duyệt bài viết?"
+              description="Bài viết sẽ được công khai sau khi duyệt."
+              onConfirm={handleApprove}
+              okText="Duyệt"
+              cancelText="Hủy"
+              okButtonProps={{ type: 'primary' }}
+            >
+              <Button type="text" icon={<CheckCircleOutlined className="text-green-600" />} />
+            </Popconfirm>
+          </Tooltip>
+        )}
+
+        {/* Edit Button */}
+        <Tooltip title="Chỉnh sửa">
+          <Button
+            type="text"
+            icon={<EditOutlined className="text-blue-500" />}
+            onClick={handleEdit}
+          />
+        </Tooltip>
+
+        {/* Delete Button */}
+        <Tooltip title="Xóa">
           <Popconfirm
-            title="Duyệt bài viết?"
-            description="Bài viết sẽ được công khai sau khi duyệt."
-            onConfirm={handleApprove}
-            okText="Duyệt"
+            title="Xóa bài viết?"
+            description="Hành động này không thể hoàn tác."
+            onConfirm={handleDelete}
+            okText="Xóa"
             cancelText="Hủy"
-            okButtonProps={{ type: 'primary' }}
+            okButtonProps={{ danger: true }}
           >
-            <Button
-              type="text"
-              icon={<CheckCircleOutlined className="text-green-600" />}
-            />
+            <Button type="text" danger icon={<DeleteOutlined />} />
           </Popconfirm>
         </Tooltip>
-      )}
-
-      {/* Edit Button */}
-      <Tooltip title="Chỉnh sửa">
-        <Button
-          type="text"
-          icon={<EditOutlined className="text-blue-500" />}
-          onClick={handleEdit}
-        />
-      </Tooltip>
-
-      {/* Delete Button */}
-      <Tooltip title="Xóa">
-        <Popconfirm
-          title="Xóa bài viết?"
-          description="Hành động này không thể hoàn tác."
-          onConfirm={handleDelete}
-          okText="Xóa"
-          cancelText="Hủy"
-          okButtonProps={{ danger: true }}
-        >
-          <Button type="text" danger icon={<DeleteOutlined />} />
-        </Popconfirm>
-      </Tooltip>
-    </Space>
-  );
-});
+      </Space>
+    );
+  },
+);
 
 ArticleActions.displayName = 'ArticleActions';
 

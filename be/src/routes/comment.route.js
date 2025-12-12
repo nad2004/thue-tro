@@ -5,12 +5,12 @@ import CommentController from '../controllers/Comment.controller.js';
 const router = express.Router();
 
 // Lấy comment theo Article ID
-router.get('/article/:articleId', CommentController.getByArticle); 
+router.get('/article/:articleId', CommentController.getByArticle);
 
 // Tạo comment (không cần protect nếu cho phép ẩn danh, nhưng nên có Rate Limiter)
 router.post('/', CommentController.create);
 
 // Xóa comment (cần protect)
-// router.delete('/:id', protect, CommentController.delete); 
+// router.delete('/:id', protect, CommentController.delete);
 
 export default router;

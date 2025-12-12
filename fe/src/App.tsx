@@ -1,61 +1,66 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 
-// --- 1. Route Guards ---
-// ProtectedRoute: Chỉ cho phép user đã login (và có thể check role Admin/Landlord)
 import ProtectedRoute from './router/ProtectedRoute';
 import PublicRoute from './router/PublicRoute';
+import AdminRoute from './router/AdminRoute';
 
-// --- 2. Layouts ---
-// import CustomerLayout from "./components/admin-layout/CustomerLayout";
 import AdminLayout from './components/admin-layout';
 import ClientLayout from './components/client-layout';
-// --- 3. Pages ---
 import Login from './page/login';
 import Register from './page/register';
 
-// // Customer Pages (Ví dụ)
 import HomePage from './page/client/home';
+import ArticlesPage from './page/client/article';
 import DetailPage from './page/client/detail';
 import PostArticlePage from './page/client/post-new';
 import MyArticlesPage from './page/client/my-article';
-// import RoomDetail from "./page/room-detail";
+import MySaveArticlesPage from './page/client/my-save-articles';
+import MyProfile from './page/client/my-profile';
 
-// Admin/Landlord Pages (Các trang hiện có của bạn)
 import DashboardPage from './page/admin/dashboard';
-import Articles from './page/admin/articles'; // Nên đổi thành PropertiesPage
-import Categories from './page/admin/categories'; // Nên đổi thành RoomTypesPage
-import TagsPage from './page/admin/tags'; // Nên đổi thành AmenitiesPage
-import CommentsPage from './page/admin/comments'; // Nên đổi thành ReviewsPage
-import UsersPage from './page/admin/users'; // Nên đổi thành BookingsPage (Quản lý khách đặt)
+import AdminArticles from './page/admin/articles';
+import AdminCategories from './page/admin/categories';
+import AdminTagsPage from './page/admin/tags';
+import AdminCommentsPage from './page/admin/comments';
+import AdminUsersPage from './page/admin/users';
 
 const App: React.FC = () => {
   return (
     <BrowserRouter>
       <Routes>
         <Route element={<ClientLayout />}>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/detail/:id" element={<DetailPage />} />
-          <Route path="/post-new" element={<PostArticlePage />} />
-          <Route path="/my-article" element={<MyArticlesPage />} />
+          <Route element={<PublicRoute />}>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/articles" element={<ArticlesPage />} />
+            <Route path="/detail/:id" element={<DetailPage />} />
+          </Route>
+          <Route element={<ProtectedRoute />}>
+            <Route path="/post-new" element={<PostArticlePage />} />
+            <Route path="/my-article" element={<MyArticlesPage />} />
+            <Route path="/my-save-articles" element={<MySaveArticlesPage />} />
+            <Route path="/my-profile" element={<MyProfile />} />
+          </Route>
         </Route>
+
         <Route element={<PublicRoute />}>
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
         </Route>
-
-        <Route path="/admin" element={<ProtectedRoute />}>
-          <Route element={<AdminLayout />}>
-            <Route index element={<Navigate to="dashboard" replace />} />
-
-            <Route path="dashboard" element={<DashboardPage />} />
-            <Route path="articles" element={<Articles />} />
-            <Route path="categories" element={<Categories />} />
-            <Route path="tags" element={<TagsPage />} />
-            <Route path="users" element={<UsersPage />} />
-            <Route path="comments" element={<CommentsPage />} />
+        <Route element={<ProtectedRoute />}>
+          <Route element={<AdminRoute />}>
+            <Route path="/admin" element={<AdminLayout />}>
+              <Route index element={<Navigate to="/admin/dashboard" replace />} />
+              <Route path="dashboard" element={<DashboardPage />} />
+              <Route path="articles" element={<AdminArticles />} />
+              <Route path="categories" element={<AdminCategories />} />
+              <Route path="tags" element={<AdminTagsPage />} />
+              <Route path="users" element={<AdminUsersPage />} />
+              <Route path="comments" element={<AdminCommentsPage />} />
+            </Route>
           </Route>
         </Route>
+
         <Route
           path="*"
           element={

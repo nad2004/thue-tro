@@ -15,7 +15,7 @@ const PostArticlePage: React.FC = () => {
   // 1. Fetch dữ liệu cần thiết
   const { data: categories = [], isLoading: isCatLoading, isError: isCatError } = useCategories();
   const { data: tags = [], isLoading: isTagLoading } = useTags();
-  
+
   // 2. Hook Create Article
   const createArticleMutation = useCreateArticle();
 
@@ -24,14 +24,14 @@ const PostArticlePage: React.FC = () => {
     try {
       await createArticleMutation.mutateAsync(values);
       // Hook useCreateArticle đã có message.success và invalidateQueries
-      
+
       // Chuyển hướng về trang chủ hoặc trang quản lý tin sau khi đăng thành công
       setTimeout(() => {
         navigate('/my-posts'); // Hoặc '/'
       }, 1500);
     } catch (error) {
       // Lỗi đã được xử lý trong onError của mutation
-      console.error("Failed to post article", error);
+      console.error('Failed to post article', error);
     }
   };
 
@@ -67,9 +67,9 @@ const PostArticlePage: React.FC = () => {
     <div className="min-h-screen bg-[#f4f4f4] py-8 px-4">
       {/* Breadcrumb hoặc nút Back */}
       <div className="max-w-5xl mx-auto mb-4">
-        <Button 
-          type="link" 
-          icon={<Home size={16}/>} 
+        <Button
+          type="link"
+          icon={<Home size={16} />}
           onClick={() => navigate('/')}
           className="pl-0 text-gray-600 hover:text-orange-600"
         >

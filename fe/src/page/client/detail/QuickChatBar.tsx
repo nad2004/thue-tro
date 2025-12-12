@@ -4,7 +4,7 @@ import { MessageCircle, Phone, User } from 'lucide-react';
 import { IUser } from '@/types/User';
 
 interface QuickChatBarProps {
-    author: IUser;
+  author: IUser;
 }
 
 export default function QuickChatBar({ author }: QuickChatBarProps) {
@@ -28,31 +28,33 @@ export default function QuickChatBar({ author }: QuickChatBarProps) {
       <div className="flex items-center gap-3">
         {/* Author Info Mini */}
         <div className="flex items-center gap-2 flex-1 min-w-0">
-           <Avatar size="small" src={author.avatar} icon={<User size={12} />} />
-           <div className="flex flex-col">
-              <span className="text-[10px] text-gray-500 uppercase leading-none">Người đăng</span>
-              <span className="font-semibold text-gray-800 truncate text-sm leading-tight">{author.fullName}</span>
-           </div>
+          <Avatar size="small" src={author.avatar} icon={<User size={12} />} />
+          <div className="flex flex-col">
+            <span className="text-[10px] text-gray-500 uppercase leading-none">Người đăng</span>
+            <span className="font-semibold text-gray-800 truncate text-sm leading-tight">
+              {author.fullName}
+            </span>
+          </div>
         </div>
 
         {/* Action Buttons */}
         <div className="flex gap-2">
-            <Button 
-                onClick={handleChat}
-                icon={<MessageCircle size={18} />}
-                size="large"
-                className="flex items-center justify-center border-blue-200 text-blue-600 bg-blue-50 hover:bg-blue-100"
-            />
-            
-            <Button 
-                type="primary"
-                onClick={handleCall}
-                icon={<Phone size={18} />}
-                size="large"
-                className="bg-[#ff7a00] hover:bg-[#ff7a00]/90 border-none shadow-sm flex items-center px-6 font-semibold"
-            >
-                Gọi ngay
-            </Button>
+          <Button
+            onClick={handleChat}
+            icon={<MessageCircle size={18} />}
+            size="large"
+            className="flex items-center justify-center border-blue-200 text-blue-600 bg-blue-50 hover:bg-blue-100"
+          />
+
+          <Button
+            type="primary"
+            onClick={handleCall}
+            icon={<Phone size={18} />}
+            size="large"
+            className="bg-[#ff7a00] hover:bg-[#ff7a00]/90 border-none shadow-sm flex items-center px-6 font-semibold"
+          >
+            Gọi ngay
+          </Button>
         </div>
       </div>
     </div>

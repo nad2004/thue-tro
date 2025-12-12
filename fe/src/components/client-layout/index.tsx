@@ -38,8 +38,8 @@ const ClientLayout = () => {
   // Menu Dropdown cho User
   const userMenuItems: MenuProps['items'] = [
     {
-      key: 'profile',
-      label: <Link to="/profile">Thông tin cá nhân</Link>,
+      key: 'my-profile',
+      label: <Link to="/my-profile">Thông tin cá nhân</Link>,
       icon: <User size={16} />,
     },
     {
@@ -48,8 +48,8 @@ const ClientLayout = () => {
       icon: <FileText size={16} />,
     },
     {
-      key: 'saved',
-      label: <Link to="/saved-posts">Tin đã lưu</Link>,
+      key: 'my-save-articles',
+      label: <Link to="/my-save-articles">Tin đã lưu</Link>,
       icon: <Heart size={16} />,
     },
     {
@@ -69,7 +69,7 @@ const ClientLayout = () => {
     { label: 'Trang chủ', key: '/', icon: <Home size={18} /> },
     // { label: 'Cho thuê phòng trọ', key: '/category/phong-tro' },
     // { label: 'Nhà nguyên căn', key: '/category/nha-nguyen-can' },
-    { label: 'Blog', key: '/blog' },
+    { label: 'Articles', key: '/articles' },
   ];
 
   // Xử lý click menu item trên mobile
