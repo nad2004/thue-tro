@@ -1,22 +1,24 @@
 import React, { useState } from 'react';
 import { Link, useNavigate, useLocation, Outlet } from 'react-router-dom';
-import { Layout, Button, Dropdown, Avatar, Badge, Space, Menu, Typography, Drawer } from 'antd';
+import { Layout, Button, Dropdown, Avatar, Badge, Space, Menu, Typography, Drawer, Popover } from 'antd';
 import type { MenuProps } from 'antd';
 import {
   Home,
   User,
   LogOut,
-  Bell,
+  MessageSquare,
   FileText,
   Heart,
   Menu as MenuIcon,
   ChevronDown,
   X,
 } from 'lucide-react';
-
 // Import Store & Types
 import { useAuthStore } from '@/store/auth-store';
-
+import { useConversations } from '@/hooks/useConversations';
+import ConversationList from './ConversationList';
+import ChatBox from '@/components/ChatBox';
+import { IUser } from '@/types/User';
 const { Header, Content, Footer } = Layout;
 const { Text } = Typography;
 
@@ -24,15 +26,38 @@ const ClientLayout = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [conversationPopoverOpen, setConversationPopoverOpen] = useState(false);
+  const [chatBoxVisible, setChatBoxVisible] = useState(false);
+  const [selectedRecipient, setSelectedRecipient] = useState<IUser | null>(null);
+  const [selectedConversationId, setSelectedConversationId] = useState<string | null>(null);
 
   // Lấy state từ authStore
   const { user, logout } = useAuthStore();
+  // Get conversations
+  const { conversations, loading: conversationsLoading, totalUnreadCount, markAsRead } = useConversations(user?._id);
 
   // Xử lý đăng xuất
   const handleLogout = () => {
     logout();
     navigate('/login');
     setMobileMenuOpen(false);
+  };
+
+  // Handle conversation selection
+  const handleSelectConversation = (conversation: any) => {
+    const otherUser = conversation.buyerID._id === user?.id
+      ? conversation.ownerID
+      : conversation.buyerID;
+
+    setSelectedRecipient(otherUser);
+    setSelectedConversationId(conversation._id);
+    setChatBoxVisible(true);
+    setConversationPopoverOpen(false);
+
+    // Mark as read
+    if (conversation.unreadCount > 0) {
+      markAsRead(conversation._id);
+    }
   };
 
   // Menu Dropdown cho User
@@ -67,8 +92,6 @@ const ClientLayout = () => {
   // Menu điều hướng chính (Navbar)
   const navItems = [
     { label: 'Trang chủ', key: '/', icon: <Home size={18} /> },
-    // { label: 'Cho thuê phòng trọ', key: '/category/phong-tro' },
-    // { label: 'Nhà nguyên căn', key: '/category/nha-nguyen-can' },
     { label: 'Articles', key: '/articles' },
   ];
 
@@ -77,6 +100,22 @@ const ClientLayout = () => {
     navigate(key);
     setMobileMenuOpen(false);
   };
+
+  // Conversation List Content
+  const conversationListContent = (
+    <div style={{ width: 360, maxHeight: 480, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
+      <div className="p-4 border-b border-gray-100">
+        <Text strong className="text-lg">Tin nhắn</Text>
+      </div>
+      <div style={{ flex: 1, overflowY: 'auto' }}>
+        <ConversationList
+          conversations={conversations}
+          loading={conversationsLoading}
+          onSelectConversation={handleSelectConversation}
+        />
+      </div>
+    </div>
+  );
 
   return (
     <Layout className="min-h-screen">
@@ -139,15 +178,25 @@ const ClientLayout = () => {
             <>
               {/* Desktop View (>= md) */}
               <Space size="middle" className="hidden! md:flex!">
-                {/* Notification */}
-                <Badge count={5} size="small" offset={[-2, 2]}>
-                  <Button
-                    type="text"
-                    shape="circle"
-                    className=""
-                    icon={<Bell size={20} className="text-gray-600 " />}
-                  />
-                </Badge>
+                {/* Messages Dropdown */}
+                <Popover
+                  content={conversationListContent}
+                  trigger="click"
+                  placement="bottomRight"
+                  open={conversationPopoverOpen}
+                  onOpenChange={setConversationPopoverOpen}
+                  overlayClassName="conversation-popover"
+                  arrow={false}
+                >
+                  <Badge count={totalUnreadCount} size="small" offset={[-2, 2]}>
+                    <Button
+                      type="text"
+                      shape="circle"
+                      className=""
+                      icon={<MessageSquare size={20} className="text-gray-600" />}
+                    />
+                  </Badge>
+                </Popover>
 
                 {/* User Dropdown */}
                 <Dropdown
@@ -185,6 +234,17 @@ const ClientLayout = () => {
                   icon={<FileText size={18} />}
                   onClick={() => navigate('/post-new')}
                 />
+                
+                {/* Messages Icon */}
+                <Badge count={totalUnreadCount} size="small" offset={[-2, 2]}>
+                  <Button
+                    type="text"
+                    shape="circle"
+                    icon={<MessageSquare size={20} className="text-gray-600" />}
+                    onClick={() => setConversationPopoverOpen(true)}
+                  />
+                </Badge>
+
                 {/* User Avatar Icon */}
                 <Avatar
                   src={user.avatar}
@@ -279,11 +339,19 @@ const ClientLayout = () => {
               </div>
             </div>
 
-            {/* Notification on mobile */}
+            {/* Messages on mobile */}
             <div className="mt-3 pt-3 border-t border-orange-100">
-              <Button type="text" icon={<Bell size={18} />} className="w-full justify-start">
-                <Badge count={5} size="small" offset={[10, 0]}>
-                  <span className="ml-2">Thông báo</span>
+              <Button 
+                type="text" 
+                icon={<MessageSquare size={18} />} 
+                className="w-full justify-start"
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  setConversationPopoverOpen(true);
+                }}
+              >
+                <Badge count={totalUnreadCount} size="small" offset={[10, 0]}>
+                  <span className="ml-2">Tin nhắn</span>
                 </Badge>
               </Button>
             </div>
@@ -314,7 +382,7 @@ const ClientLayout = () => {
                   key: 'profile',
                   label: 'Thông tin cá nhân',
                   icon: <User size={16} />,
-                  onClick: () => handleMobileMenuClick('/profile'),
+                  onClick: () => handleMobileMenuClick('/my-profile'),
                 },
                 {
                   key: 'my-article',
@@ -326,7 +394,7 @@ const ClientLayout = () => {
                   key: 'saved',
                   label: 'Tin đã lưu',
                   icon: <Heart size={16} />,
-                  onClick: () => handleMobileMenuClick('/saved-posts'),
+                  onClick: () => handleMobileMenuClick('/my-save-articles'),
                 },
                 {
                   type: 'divider',
@@ -372,6 +440,40 @@ const ClientLayout = () => {
           </div>
         )}
       </Drawer>
+
+      {/* --- MOBILE CONVERSATION DRAWER --- */}
+      <Drawer
+        title="Tin nhắn"
+        placement="right"
+        onClose={() => setConversationPopoverOpen(false)}
+        open={conversationPopoverOpen && window.innerWidth < 768}
+        width={320}
+        closeIcon={<X size={20} />}
+        styles={{
+          body: { padding: 0 },
+        }}
+        className="md:hidden"
+      >
+        <ConversationList
+          conversations={conversations}
+          loading={conversationsLoading}
+          onSelectConversation={handleSelectConversation}
+        />
+      </Drawer>
+
+      {/* --- CHAT BOX MODAL --- */}
+      {selectedRecipient && (
+        <ChatBox
+          visible={chatBoxVisible}
+          onClose={() => {
+            setChatBoxVisible(false);
+            setSelectedRecipient(null);
+            setSelectedConversationId(null);
+          }}
+          recipient={selectedRecipient}
+          conversationId={selectedConversationId || undefined}
+        />
+      )}
 
       {/* --- MAIN CONTENT --- */}
       <Content className="site-layout" style={{ background: '#f0f2f5' }}>

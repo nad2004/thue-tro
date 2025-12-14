@@ -1,7 +1,7 @@
 import { Article } from './Article';
 export type UserRole = 'Admin' | 'Landlord' | 'Tenant';
 export interface IUser {
-  id: string;
+  _id: string;
   fullName: string;
   email: string;
   phoneNumber: string;
@@ -24,7 +24,7 @@ export interface IUserBackend {
 }
 
 export class User implements IUser {
-  id: string;
+  _id: string;
   fullName: string;
   email: string;
   phoneNumber: string;
@@ -44,7 +44,7 @@ export class User implements IUser {
     phoneNumber,
     savedArticles,
   }: IUserBackend) {
-    this.id = id || _id || '';
+    this._id = id || _id || '';
     this.fullName = fullName || '';
     this.email = email || '';
     this.phoneNumber = phoneNumber || '';

@@ -14,6 +14,8 @@ import morgan from 'morgan';
 import swaggerUi from 'swagger-ui-express';
 import { swaggerSpec } from './config/swagger.js';
 import { errorHandler } from './middleware/error.middleware.js';
+import { createServer } from 'http'; 
+import { initSocket } from './config/socket.js';
 dotenv.config();
 
 // Kết nối Database
@@ -21,7 +23,8 @@ connectDB();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-
+const httpServer = createServer(app);
+initSocket(httpServer);
 // Middleware bảo mật và logging
 app.use(helmet());
 app.use(cors());
@@ -43,7 +46,7 @@ app.get('/', (req, res) => {
 });
 app.use(errorHandler);
 
-app.listen(PORT, () => {
-  console.log(`Server đang chạy tại http://localhost:${PORT}`);
+httpServer.listen(PORT, () => {
+  console.log(`Server & Socket đang chạy tại http://localhost:${PORT}`);
   console.log(`📄 Swagger Docs available at http://localhost:${PORT}/api-docs`);
 });

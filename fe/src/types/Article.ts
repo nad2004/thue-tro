@@ -100,7 +100,7 @@ export class Article implements IArticle {
     // Map author
     this.authorID = data?.authorID
       ? {
-          id: data.authorID.id || data.authorID._id || '',
+          _id: data.authorID.id || data.authorID._id || '',
           // username: data.author.username || "",
           email: data.authorID.email || '',
           fullName: data.authorID.fullName || '',

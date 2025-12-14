@@ -1,13 +1,13 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
-import { IUser } from '@/types/User'; // Import interface User đã tạo
+import { IUserBackend } from '@/types/User'; // Import interface User đã tạo
 interface AuthState {
   token: string | null;
-  user: IUser | null;
+  user: IUserBackend | null;
   isLoading: boolean;
 }
 interface AuthActions {
-  setAuth: (data: { user: IUser; token?: string }) => void;
+  setAuth: (data: { user: IUserBackend; token?: string }) => void;
   setLoading: (loadingState: boolean) => void;
   logout: () => void;
   initialize: () => void;

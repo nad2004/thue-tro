@@ -12,11 +12,6 @@ const ConversationSchema = new mongoose.Schema(
       ref: 'User',
       required: true,
     },
-    articleID: {
-      type: mongoose.Schema.Types.ObjectId, // Chat về phòng nào
-      ref: 'Article',
-      required: true,
-    },
     lastMessageSnippet: {
       type: String, // "Dạ phòng còn không ạ..."
       default: '',
