@@ -54,7 +54,7 @@ const UsersPage: React.FC = () => {
           <div className="flex flex-col">
             <Text strong>{record.fullName}</Text>
             <Text type="secondary" className="text-xs">
-              @{record.id.slice(0, 6)}...
+              @{record._id.slice(0, 6)}...
             </Text>
           </div>
         </Space>
@@ -75,7 +75,7 @@ const UsersPage: React.FC = () => {
         <Select
           defaultValue={role}
           style={{ width: 130 }}
-          onChange={(val) => handleRoleChange(record.id, val)}
+          onChange={(val) => handleRoleChange(record._id, val)}
           disabled={updateUserRole.isPending}
           variant="filled" // Antd v5 style mới
         >
@@ -107,7 +107,7 @@ const UsersPage: React.FC = () => {
           <Popconfirm
             title="Bạn có chắc muốn xóa?"
             description="Hành động này sẽ xóa vĩnh viễn người dùng."
-            onConfirm={() => deleteUser.mutate(record.id)}
+            onConfirm={() => deleteUser.mutate(record._id)}
             okText="Xóa"
             cancelText="Hủy"
             okButtonProps={{ danger: true }}
@@ -140,7 +140,7 @@ const UsersPage: React.FC = () => {
         <Table
           columns={columns}
           dataSource={users}
-          rowKey={(record) => record.id}
+          rowKey={(record) => record._id}
           loading={isLoading}
           pagination={{
             current: filters.page,

@@ -19,7 +19,7 @@ const ConversationList: React.FC<ConversationListProps> = ({
   const user = useAuthStore((state) => state.user);
 
   const getOtherUser = (conversation: IConversation) => {
-    return conversation.buyerID._id === user?.id
+    return conversation.buyerID._id === user?._id
       ? conversation.ownerID
       : conversation.buyerID;
   };
