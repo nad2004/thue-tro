@@ -70,9 +70,9 @@ export default function OwnerInfo({ author }: OwnerInfoProps) {
               icon={<User size={40} />}
               className="border-4 border-white shadow-sm bg-gray-200 flex items-center justify-center"
             />
-            <Tooltip title="Đang hoạt động">
+            {/* <Tooltip title="Đang hoạt động">
               <span className="absolute bottom-1 right-1 w-4 h-4 bg-green-500 border-2 border-white rounded-full"></span>
-            </Tooltip>
+            </Tooltip> */}
           </div>
 
           <Title level={4} style={{ marginBottom: 4 }}>

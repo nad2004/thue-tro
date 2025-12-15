@@ -214,6 +214,10 @@ const Article = () => {
             onCategoryChange={handleCategoryChange}
             onPriceRangeChange={handlePriceRangeChange}
             onAreaRangeChange={handleAreaRangeChange}
+            searchText={searchText}
+            querryPriceRange={priceRange}
+            querryAreaRange={areaRange}
+            resetFilters={resetFilters}
           />
 
           {/* Tag Filter */}

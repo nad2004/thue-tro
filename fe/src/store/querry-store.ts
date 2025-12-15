@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 
 interface QueryState {
-  searchText?: string;
+  searchText: string;
   categoryId?: string;
   status?: string;
   page: number;
@@ -9,12 +9,12 @@ interface QueryState {
   selectedTags: string[];
   activeTab: string;
   priceRange: {
-    min?: number;
-    max?: number;
+    min: number;
+    max: number;
   };
   areaRange: {
-    min?: number;
-    max?: number;
+    min: number;
+    max: number;
   };
   setSearchText: (searchText: string) => void;
   setCategoryId: (categoryId: string | null) => void;
@@ -28,7 +28,7 @@ interface QueryState {
 }
 
 export const useQueryStore = create<QueryState>()((set) => ({
-  searchText: undefined,
+  searchText: "",
   categoryId: undefined,
   status: undefined,
   page: 1,
@@ -36,12 +36,12 @@ export const useQueryStore = create<QueryState>()((set) => ({
   selectedTags: [],
   activeTab: 'all',
   priceRange: {
-    min: undefined,
-    max: undefined,
+    min: 0, 
+    max: 20 * 1000000,
   },
   areaRange: {
-    min: undefined,
-    max: undefined,
+    min: 0,
+    max: 100,
   },
 
   setSearchText: (searchText: string) => {
@@ -93,8 +93,8 @@ export const useQueryStore = create<QueryState>()((set) => ({
       status: undefined,
       selectedTags: [],
       activeTab: 'all',
-      priceRange: { min: undefined, max: undefined },
-      areaRange: { min: undefined, max: undefined },
+      priceRange: { min: 0, max: 20 * 1000000 },
+      areaRange: { min: 0, max: 100 },
       page: 1,
       limit: 12,
     }),

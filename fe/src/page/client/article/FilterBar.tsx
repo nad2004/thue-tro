@@ -5,10 +5,20 @@ import { Category } from '@/types/Category';
 
 interface FilterBarProps {
   categories: Category[];
+  searchText: string;
+  querryPriceRange: {
+    min: number;
+    max: number;
+  };
+  querryAreaRange: {
+    min: number;
+    max: number;
+  };
   onSearch: (value: string) => void;
   onCategoryChange: (categoryId: string) => void;
   onPriceRangeChange?: (min?: number, max?: number) => void;
   onAreaRangeChange?: (min?: number, max?: number) => void;
+  resetFilters?: () => void
 }
 
 const FilterBar: React.FC<FilterBarProps> = ({
@@ -17,11 +27,21 @@ const FilterBar: React.FC<FilterBarProps> = ({
   onCategoryChange,
   onPriceRangeChange,
   onAreaRangeChange,
+  searchText,
+  querryPriceRange,
+  querryAreaRange,
+  resetFilters
 }) => {
-  const [searchValue, setSearchValue] = useState('');
+  const [searchValue, setSearchValue] = useState(searchText);
   const [showAdvanced, setShowAdvanced] = useState(false);
-  const [priceRange, setPriceRange] = useState<[number, number]>([0, 20]);
-  const [areaRange, setAreaRange] = useState<[number, number]>([0, 100]);
+  const [priceRange, setPriceRange] = useState<[number, number]>([
+    querryPriceRange?.min / 1000000|| 0 ,
+    querryPriceRange?.max / 1000000|| 20
+  ]);
+  const [areaRange, setAreaRange] = useState<[number, number]>([
+    querryAreaRange?.min || 0,
+    querryAreaRange?.max || 100
+  ]);
 
   const handleSearchClick = () => {
     onSearch(searchValue);
@@ -51,6 +71,7 @@ const FilterBar: React.FC<FilterBarProps> = ({
     if (onAreaRangeChange) {
       onAreaRangeChange(undefined, undefined);
     }
+    resetFilters
   };
 
   return (
@@ -101,6 +122,7 @@ const FilterBar: React.FC<FilterBarProps> = ({
         >
           Tìm kiếm
         </Button>
+
       </div>
 
       <Drawer
@@ -151,34 +173,6 @@ const FilterBar: React.FC<FilterBarProps> = ({
               onChange={(value) => setAreaRange(value as [number, number])}
               tooltip={{ formatter: (value) => `${value} m²` }}
             />
-          </div>
-
-          <div>
-            <label className="text-sm font-semibold text-gray-700 block mb-3">
-              Tình trạng nội thất
-            </label>
-            <Select size="large" placeholder="Chọn tình trạng" className="w-full" allowClear>
-              <Select.Option value="full">Đầy đủ</Select.Option>
-              <Select.Option value="partial">Cơ bản</Select.Option>
-              <Select.Option value="empty">Trống</Select.Option>
-            </Select>
-          </div>
-
-          <div>
-            <label className="text-sm font-semibold text-gray-700 block mb-3">Tiện ích</label>
-            <div className="space-y-2">
-              {['Wifi', 'Điều hòa', 'Máy giặt', 'Bảo vệ 24/7', 'Gửi xe', 'Thang máy'].map(
-                (utility) => (
-                  <label
-                    key={utility}
-                    className="flex items-center gap-2 cursor-pointer p-2 hover:bg-gray-50 rounded-lg transition-colors"
-                  >
-                    <input type="checkbox" className="w-4 h-4 text-orange-500 rounded" />
-                    <span className="text-sm text-gray-700">{utility}</span>
-                  </label>
-                ),
-              )}
-            </div>
           </div>
 
           <div className="flex gap-3 pt-4 border-t">

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 import { Input, Button, Select } from 'antd';
 import { Search, MapPin, Home, Sparkles } from 'lucide-react';
 import { useQueryStore } from '@/store/querry-store';
@@ -12,13 +12,44 @@ const HeroSection: React.FC = () => {
   const setSearchText = useQueryStore((s) => s.setSearchText);
   const setPriceRange = useQueryStore((s) => s.setPriceRange);
   const setAreaRange = useQueryStore((s) => s.setAreaRange);
+  
+  // Local state để giữ giá trị input
+  const [localSearchText, setLocalSearchText] = React.useState(searchText);
+  const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Sync local state with store when store changes
+  useEffect(() => {
+    setLocalSearchText(searchText);
+  }, [searchText]);
+
   const handleSearch = () => {
+    // Cập nhật store và navigate chỉ khi nhấn nút Search
+    setSearchText(localSearchText);
     navigate('/articles');
   };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setLocalSearchText(value);
+
+    // Clear timeout trước đó
+    if (debounceTimerRef.current) {
+      clearTimeout(debounceTimerRef.current);
+    }
+
+    // Tùy chọn: Debounce để cập nhật store (nếu muốn auto-search)
+    // Bỏ comment dòng dưới nếu muốn tự động search sau 500ms
+    // debounceTimerRef.current = setTimeout(() => {
+    //   setSearchText(value);
+    // }, 500);
+  };
+
   const handleQuickSearch = (keyword: string) => {
     setSearchText(keyword);
+    setLocalSearchText(keyword);
     navigate('/articles');
   };
+
   const handlePriceChange = (value: string) => {
     if (!value) {
       setPriceRange({ min: undefined, max: undefined });
@@ -35,6 +66,7 @@ const HeroSection: React.FC = () => {
       });
     }
   };
+
   const handleAreaChange = (value: string) => {
     if (!value) {
       setAreaRange({ min: undefined, max: undefined });
@@ -51,22 +83,15 @@ const HeroSection: React.FC = () => {
       });
     }
   };
-  const getCurrentPriceValue = (): string => {
-    if (!priceRange.min && !priceRange.max) return '';
 
-    const min = (priceRange.min || 0) / 1000000;
-    const max = priceRange.max ? priceRange.max / 1000000 : '+';
-
-    return `${min}-${max}`;
-  };
-  const getCurrentAreaValue = (): string => {
-    if (!areaRange.min && !areaRange.max) return '';
-
-    const min = areaRange.min || 0;
-    const max = areaRange.max || '+';
-
-    return `${min}-${max}`;
-  };
+  // Cleanup debounce timer
+  useEffect(() => {
+    return () => {
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current);
+      }
+    };
+  }, []);
 
   return (
     <div className="relative bg-linear-to-br from-orange-500 via-orange-400 to-amber-500 overflow-hidden mt-3">
@@ -98,8 +123,8 @@ const HeroSection: React.FC = () => {
                   size="large"
                   placeholder="Tìm kiếm theo địa điểm, quận, phường..."
                   prefix={<Search size={20} className="text-gray-400" />}
-                  value={searchText}
-                  onChange={(e) => setSearchText(e.target.value)}
+                  value={localSearchText}
+                  onChange={handleInputChange}
                   onPressEnter={handleSearch}
                   className="rounded-xl border-gray-200 hover:border-orange-400 focus:border-orange-500"
                 />
@@ -107,7 +132,6 @@ const HeroSection: React.FC = () => {
               <Select
                 size="large"
                 placeholder="Mức giá"
-                value={getCurrentPriceValue()}
                 onChange={handlePriceChange}
                 className="w-full md:w-48 rounded-xl"
                 options={[
@@ -122,7 +146,6 @@ const HeroSection: React.FC = () => {
               <Select
                 size="large"
                 placeholder="Diện tích"
-                value={getCurrentAreaValue()}
                 onChange={handleAreaChange}
                 className="w-full md:w-48 rounded-xl"
                 options={[
@@ -147,8 +170,8 @@ const HeroSection: React.FC = () => {
           </div>
 
           <div className="flex flex-wrap items-center justify-center gap-2 mt-6">
-            <span className="text-white/80 text-sm">Tìm kiếm phổ biến:</span>
-            {['Phòng trọ Hà Nội', 'Phòng trọ Quận 1', 'Phòng dưới 3 triệu', 'Căn hộ mini'].map(
+            <span className="text-white/80 text-sm">Nhập nhanh:</span>
+            {[ 'Phòng trọ', 'Chung cư mini'].map(
               (keyword) => (
                 <button
                   key={keyword}
