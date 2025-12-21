@@ -31,7 +31,7 @@ import OwnerInfo from './OwnerInfo';
 import QuickChatBar from './QuickChatBar';
 import { useAuthStore } from '@/store/auth-store';
 import { useToggleSaveArticle } from '@/hooks/useUsers';
-
+import LocationMap from './LocationMap';
 const { Title, Text } = Typography;
 
 export default function DetailPage() {
@@ -75,7 +75,7 @@ export default function DetailPage() {
     navigator.clipboard.writeText(window.location.href);
     messageApi.success('Đã sao chép liên kết');
   };
-
+ 
   // --- Loading State ---
   if (isLoading) {
     return (
@@ -102,7 +102,12 @@ export default function DetailPage() {
       </div>
     );
   }
-
+   const getLocationString = () => {
+    if (article.categoryID?.categoryName) {
+        return `${article.categoryID.categoryName}, Vietnam`;
+    }
+    return "Hà Nội, Vietnam";
+  }
   return (
     <div className="min-h-screen bg-gray-50 pb-24 md:pb-10">
       {contextHolder}
@@ -289,6 +294,7 @@ export default function DetailPage() {
                 </div>
               </Card>
             )}
+            <LocationMap address={getLocationString()} />
           </Col>
 
           {/* --- RIGHT COLUMN (Sidebar) --- */}
