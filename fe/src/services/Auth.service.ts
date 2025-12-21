@@ -5,13 +5,13 @@ import { LoginValues, RegisterValues } from '@/lib/utils/validation';
 
 interface AuthResponse {
   token: string;
-  data: IUser; // Backend trả về user info trong field 'data'
+  data: IUser;
 }
 
 export const AuthService = {
   login: async (data: LoginValues): Promise<AuthResponse> => {
     const res = await axiosInstance.post<ApiResponse<AuthResponse>>('/user/login', data);
-    return res.data.data; // Giả sử cấu trúc: { success: true, data: { token: "...", data: User } }
+    return res.data.data; 
   },
 
   register: async (data: RegisterValues): Promise<AuthResponse> => {

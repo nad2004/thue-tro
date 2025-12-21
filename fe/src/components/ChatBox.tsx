@@ -55,7 +55,7 @@ const ChatBox: React.FC<ChatBoxProps> = ({ visible, onClose, recipient, conversa
 
   // --- LOGIC 1: ĐỒNG BỘ PROP VÀO STATE ---
   useEffect(() => {
-    console.log('🔄 Syncing conversationId from prop:', initialConversationId);
+    // console.log('🔄 Syncing conversationId from prop:', initialConversationId);
     if (initialConversationId && initialConversationId !== conversationID) {
       setConversationID(initialConversationId);
       hasJoinedRef.current = false; // Reset joined flag
@@ -65,13 +65,13 @@ const ChatBox: React.FC<ChatBoxProps> = ({ visible, onClose, recipient, conversa
   // --- LOGIC 2: KHỞI TẠO CONVERSATION & JOIN SOCKET ROOM ---
   useEffect(() => {
     if (!visible || !user?._id || !recipient?._id) {
-      console.log('⏸️ ChatBox not ready:', { visible, userId: user?._id, recipientId: recipient?._id });
+      // console.log('⏸️ ChatBox not ready:', { visible, userId: user?._id, recipientId: recipient?._id });
       return;
     }
 
     // ⚠️ QUAN TRỌNG: Chờ socket connected
     if (!isConnected) {
-      console.log('⏳ Waiting for socket connection...');
+      // console.log('⏳ Waiting for socket connection...');
       return;
     }
 
@@ -80,18 +80,18 @@ const ChatBox: React.FC<ChatBoxProps> = ({ visible, onClose, recipient, conversa
         setIsInitializing(true);
         let targetId = conversationID;
 
-        console.log('🚀 initSocketRoom:', { targetId, hasJoined: hasJoinedRef.current, isConnected });
+        // console.log('🚀 initSocketRoom:', { targetId, hasJoined: hasJoinedRef.current, isConnected });
 
         if (!targetId) {
-          console.log('🔄 Creating new conversation...');
+          // console.log('🔄 Creating new conversation...');
           if(!user._id) return 
          const conv = await startConversation(user._id, recipient._id);
           if (conv?._id) {
             targetId = conv._id;
             setConversationID(conv._id);
-            console.log('✅ Created conversation:', conv._id);
+            // console.log('✅ Created conversation:', conv._id);
           } else {
-            console.error('❌ Failed to create conversation');
+            // console.error('❌ Failed to create conversation');
             return;
           }
         }
@@ -100,18 +100,18 @@ const ChatBox: React.FC<ChatBoxProps> = ({ visible, onClose, recipient, conversa
         if (targetId) {
           // Nếu đã join room khác, leave trước
           if (hasJoinedRef.current && hasJoinedRef.current !== targetId) {
-            console.log('🔄 Switching room, leaving old:', hasJoinedRef.current);
+            // console.log('🔄 Switching room, leaving old:', hasJoinedRef.current);
             leaveConversation(hasJoinedRef.current);
           }
 
           // Chỉ join nếu chưa join room này
           if (hasJoinedRef.current !== targetId) {
-            console.log('🔥 Joining conversation:', targetId);
+            // console.log('🔥 Joining conversation:', targetId);
             joinConversation(targetId);
             hasJoinedRef.current = targetId;
-            console.log('✅ ChatBox joined room:', targetId);
+            // console.log('✅ ChatBox joined room:', targetId);
           } else {
-            console.log('ℹ️ Already joined room:', targetId);
+            // console.log('ℹ️ Already joined room:', targetId);
           }
         }
       } catch (error) {
@@ -127,7 +127,7 @@ const ChatBox: React.FC<ChatBoxProps> = ({ visible, onClose, recipient, conversa
     // Cleanup khi component unmount hoặc conversationID thay đổi
     return () => {
       if (hasJoinedRef.current && typeof hasJoinedRef.current === 'string') {
-        console.log('🔌 Leaving room:', hasJoinedRef.current);
+        // console.log('🔌 Leaving room:', hasJoinedRef.current);
         leaveConversation(hasJoinedRef.current);
         stopTyping(hasJoinedRef.current);
       }
@@ -137,7 +137,7 @@ const ChatBox: React.FC<ChatBoxProps> = ({ visible, onClose, recipient, conversa
   // --- LOGIC 3: CLEANUP KHI ĐÓNG MODAL ---
   useEffect(() => {
     if (!visible) {
-      console.log('❌ Modal closed, cleaning up...');
+      // console.log('❌ Modal closed, cleaning up...');
       setInputValue('');
       clearMessages();
       hasJoinedRef.current = false;
@@ -148,7 +148,7 @@ const ChatBox: React.FC<ChatBoxProps> = ({ visible, onClose, recipient, conversa
   // --- LOGIC 4: SOCKET UPDATE ---
   useEffect(() => {
     if (socketMessages.length > 0) {
-      console.log('📨 Merging socket messages:', socketMessages.length);
+      // console.log('📨 Merging socket messages:', socketMessages.length);
       setDbMessages((prev) => {
         // Lọc duplicate messages
         const existingIds = new Set(prev.map(m => m._id));

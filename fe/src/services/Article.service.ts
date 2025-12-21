@@ -13,8 +13,6 @@ interface GetAllArticlesResponse {
 export const ArticleService = {
   getAll: async (params?: QueryParams): Promise<GetAllArticlesResponse> => {
     const response = await axiosInstance.get<any>(ENDPOINT, { params });
-
-    // Logic parse response giữ nguyên như file cũ của bạn
     const responseBody = response.data ? response.data : response;
     const payloadData = responseBody.data || {};
     const rawList = Array.isArray(payloadData) ? payloadData : payloadData.data || [];

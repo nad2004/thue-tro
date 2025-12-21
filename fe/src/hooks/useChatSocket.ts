@@ -43,7 +43,7 @@ export const useChatSocket = () => {
     (conversationID: string) => {
       if (!socket) return;
       socket.emit('join_conversation', conversationID);
-      console.log('📥 Joined conversation:', conversationID);
+      // console.log('📥 Joined conversation:', conversationID);
     },
     [socket]
   );
@@ -53,7 +53,7 @@ export const useChatSocket = () => {
     (conversationID: string) => {
       if (!socket) return;
       socket.emit('leave_conversation', conversationID);
-      console.log('📤 Left conversation:', conversationID);
+      // console.log('📤 Left conversation:', conversationID);
     },
     [socket]
   );
@@ -116,7 +116,7 @@ export const useChatSocket = () => {
     if (!socket) return;
 
     const handleReceiveMessage = (message: Message) => {
-      console.log('📨 Received message:', message);
+      // console.log('📨 Received message:', message);
       setMessages((prev) => [...prev, message]);
     };
 

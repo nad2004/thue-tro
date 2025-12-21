@@ -37,12 +37,12 @@ export const useSocket = () => {
 
     // Event handlers
     socket.on('connect', () => {
-      console.log('✅ Socket connected:', socket.id);
+      // console.log('✅ Socket connected:', socket.id);
       setIsConnected(true);
     });
 
     socket.on('disconnect', (reason) => {
-      console.log('❌ Socket disconnected:', reason);
+      // console.log('❌ Socket disconnected:', reason);
       setIsConnected(false);
     });
 
