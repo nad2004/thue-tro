@@ -14,14 +14,13 @@ const uploadFields = upload.fields([
 
 // --- PUBLIC ROUTES (Ai cũng xem được) ---
 router.get('/', protectOptional, ArticleController.getAll);
-router.get('/:id', protectOptional, ArticleController.getOne);
 router.get(
   '/my-articles',
   protect,
   authorize('Admin', 'Landlord'),
   ArticleController.getMyArticles,
 );
-
+router.get('/:id', protectOptional, ArticleController.getOne);
 router.post('/', protect, authorize('Admin', 'Landlord'), uploadFields, ArticleController.create);
 router.put('/:id', protect, authorize('Admin', 'Landlord'), uploadFields, ArticleController.update);
 router.delete('/:id', protect, authorize('Admin', 'Landlord'), ArticleController.delete);
