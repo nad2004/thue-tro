@@ -18,11 +18,6 @@ export default function OwnerInfo({ author }: OwnerInfoProps) {
   const user = useAuthStore((state) => state.user);
   const { startConversation } = useChatSocket(); // ✅ Lấy hàm startConversation
   if (!author) return null;
-
-  const displayPhone = author.phoneNumber 
-    ? `${author.phoneNumber.slice(0, 3)} ${author.phoneNumber.slice(3, 6)} ****`
-    : '098 888 ****';
-
   const handleCall = () => {
     if (author.phoneNumber) {
       window.location.href = `tel:${author.phoneNumber}`;
@@ -90,12 +85,12 @@ export default function OwnerInfo({ author }: OwnerInfoProps) {
           <Button
             type="primary"
             size="large"
-            block
+            
             icon={<Phone size={18} />}
             onClick={handleCall}
             className="bg-[#ff7a00] hover:bg-[#ff7a00]/90 border-[#ff7a00] h-12 font-semibold shadow-none flex items-center justify-center gap-2"
           >
-            {displayPhone} · Hiện số
+            {author.phoneNumber}
           </Button>
 
           <Button
