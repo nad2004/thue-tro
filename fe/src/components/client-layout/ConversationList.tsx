@@ -19,6 +19,7 @@ const ConversationList: React.FC<ConversationListProps> = ({
   const user = useAuthStore((state) => state.user);
 
   const getOtherUser = (conversation: IConversation) => {
+    if(!conversation.buyerID || !conversation.ownerID) return
     return conversation.buyerID._id === user?._id
       ? conversation.ownerID
       : conversation.buyerID;
@@ -79,18 +80,18 @@ const ConversationList: React.FC<ConversationListProps> = ({
             onClick={() => onSelectConversation(conversation)}
             style={{ padding: '12px 16px' }}
           >
-            <div className="flex items-center gap-3 w-full">
+            {otherUser && <div className="flex items-center gap-3 w-full">
               <Badge
                 count={conversation.unreadCount}
                 size="small"
                 offset={[-5, 5]}
               >
-                <Avatar
+               {otherUser && <Avatar
                   src={otherUser.avatar}
                   icon={<User size={20} />}
                   size={48}
                   className="bg-orange-100"
-                />
+                />}
               </Badge>
 
               <div className="flex-1 min-w-0">
@@ -99,7 +100,7 @@ const ConversationList: React.FC<ConversationListProps> = ({
                     strong={hasUnread}
                     className={`text-sm ${hasUnread ? 'text-gray-900' : 'text-gray-700'}`}
                   >
-                    {otherUser.fullName}
+                    {otherUser && otherUser.fullName}
                   </Text>
                   <Text
                     type="secondary"
@@ -121,7 +122,7 @@ const ConversationList: React.FC<ConversationListProps> = ({
                   {conversation.lastMessageSnippet || 'Bắt đầu cuộc trò chuyện...'}
                 </Text>
               </div>
-            </div>
+            </div>}
           </List.Item>
         );
       }}
